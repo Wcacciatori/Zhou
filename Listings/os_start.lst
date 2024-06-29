@@ -1,0 +1,183 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;EXPORT  OSStartHighRdy  
+    2 00000000         ;EXPORT  OSCtxSw
+    3 00000000         ;EXPORT  OSIntCtxSw
+    4 00000000         
+    5 00000000         ;EXTERN  OSRunning
+    6 00000000         ;EXTERN  OSPrioCur
+    7 00000000         ;EXTERN  OSPrioHighRdy
+    8 00000000         ;EXTERN  OSTCBCur
+    9 00000000         ;EXTERN  OSTCBHighRdy
+   10 00000000         ;EXTERN  OSIntExit
+   11 00000000         ;EXTERN  OSTaskSwHook
+   12 00000000         ;;EXTERN  OS_CPU_ExceptStkBase
+   13 00000000         ;;EXTERN  OS_KA_BASEPRI_Boundary
+   14 00000000         ;OS_CPU_ExceptStkBase  EQU 0x00 
+   15 00000000         ;OS_KA_BASEPRI_Boundary  EQU 0x00
+   16 00000000         ;NVIC_INT_CTRL   EQU     0xE000ED04                     
+                                
+   17 00000000         ;NVIC_SYSPRI14   EQU     0xE000ED22                     
+                                
+   18 00000000         ;NVIC_PENDSV_PRI EQU           0xFF                     
+                               
+   19 00000000         ;NVIC_PENDSVSET  EQU     0x10000000   
+   20 00000000         
+   21 00000000         
+   22 00000000         ;AREA Init, CODE, READONLY
+   23 00000000         
+   24 00000000         ;OSStartHighRdy
+   25 00000000         ;CPSID   I                                              
+                            
+   26 00000000         ;LDR     R0, =NVIC_SYSPRI14                             
+                           
+   27 00000000         ;LDR     R1, =NVIC_PENDSV_PRI
+   28 00000000         ;STRB    R1, [R0]
+   29 00000000         
+   30 00000000         ;MOVS    R0, #0                                         
+                           
+   31 00000000         ;MSR     PSP, R0
+   32 00000000         
+   33 00000000         ;LDR     R0, =OS_CPU_ExceptStkBase                      
+                            
+   34 00000000         ;LDR     R1, [R0]
+   35 00000000         ;MSR     MSP, R1
+   36 00000000         
+   37 00000000         ;BL      OSTaskSwHook                                   
+                            
+   38 00000000         
+   39 00000000         ;LDR     R0, =OSRunning                                 
+                           
+   40 00000000         ;MOVS    R1, #1
+   41 00000000         ;STRB    R1, [R0]
+   42 00000000         
+   43 00000000         ;LDR     R0, =OSPrioCur                                 
+                            
+   44 00000000         ;LDR     R1, =OSPrioHighRdy
+   45 00000000         ;LDRB    R2, [R1]
+   46 00000000         ;STRB    R2, [R0]
+   47 00000000         
+   48 00000000         ;LDR     R0, =OSTCBCur                                  
+                           
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   49 00000000         ;LDR     R1, =OSTCBHighRdy
+   50 00000000         ;LDR     R2, [R1]
+   51 00000000         ;STR     R2, [R0]
+   52 00000000         
+   53 00000000         ;LDR     R0, [R2]                                       
+                          
+   54 00000000         ;MSR     PSP, R0                                        
+                           
+   55 00000000         
+   56 00000000         ;MRS     R0, CONTROL
+   57 00000000         ;ORR     R0, R0, #2
+   58 00000000         ;MSR     CONTROL, R0
+   59 00000000         ;ISB                                                    
+                           
+   60 00000000         
+   61 00000000         ;LDMFD    SP!, {R4-R11, LR}                             
+                            
+   62 00000000         ;LDMFD    SP!, {R0-R3}                                  
+                           
+   63 00000000         ;LDMFD    SP!, {R12, LR}                                
+                            
+   64 00000000         ;LDMFD    SP!, {R1, R2}                                 
+                            
+   65 00000000         ;CPSIE    I
+   66 00000000         ;BX       R1
+   67 00000000         
+   68 00000000         
+   69 00000000         ;OSCtxSw
+   70 00000000         ;OSIntCtxSw
+   71 00000000         ;LDR     R0, =NVIC_INT_CTRL                             
+                            
+   72 00000000         ;LDR     R1, =NVIC_PENDSVSET
+   73 00000000         ;STR     R1, [R0]
+   74 00000000         ;BX      LR
+   75 00000000         
+   76 00000000         
+   77 00000000         ;OS_CPU_PendSVHandler
+   78 00000000         ;CPSID   I                                              
+                            
+   79 00000000         ;MOV32   R2, OS_KA_BASEPRI_Boundary                     
+                           
+   80 00000000         ;LDR     R1, [R2]
+   81 00000000         ;MSR     BASEPRI, R1
+   82 00000000         ;DSB
+   83 00000000         ;ISB
+   84 00000000         ;CPSIE   I
+   85 00000000         
+   86 00000000         ;MRS     R0, PSP                                        
+                           
+   87 00000000         ;STMFD   R0!, {R4-R11, R14}                             
+                            
+   88 00000000         
+   89 00000000         ;LDR     R5, =OSTCBCur                                  
+                           
+   90 00000000         ;LDR     R1, [R5]
+   91 00000000         ;STR     R0, [R1]                                       
+                           
+   92 00000000         
+   93 00000000         
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+   94 00000000         ;MOV     R4, LR                                         
+                           
+   95 00000000         ;BL      OSTaskSwHook                                   
+                            
+   96 00000000         
+   97 00000000         ;LDR     R0, =OSPrioCur                                 
+                            
+   98 00000000         ;LDR     R1, =OSPrioHighRdy
+   99 00000000         ;LDRB    R2, [R1]
+  100 00000000         ;STRB    R2, [R0]
+  101 00000000         
+  102 00000000         ;LDR     R1, =OSTCBHighRdy                              
+                            
+  103 00000000         ;LDR     R2, [R1]
+  104 00000000         ;STR     R2, [R5]
+  105 00000000         
+  106 00000000         ;ORR     LR,  R4, #0x04                                 
+                           
+  107 00000000         ;LDR     R0,  [R2]                                      
+                            
+  108 00000000         ;LDMFD   R0!, {R4-R11, R14}                             
+                          
+  109 00000000         ;MSR     PSP, R0                                        
+                            
+  110 00000000         
+  111 00000000         ;MOV32   R2, #0                                         
+                          
+  112 00000000         ;CPSID   I
+  113 00000000         ;MSR     BASEPRI, R2
+  114 00000000         ;DSB
+  115 00000000         ;ISB
+  116 00000000         ;CPSIE   I
+  117 00000000         ;BX      LR                                             
+                           
+  118 00000000         
+  119 00000000         ;ALIGN                                                  
+                           
+  120 00000000         
+  121 00000000                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\os_start.d -o.\objects\os_start.o -I.\RTE\_Target_1 -
+ID:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include -ID:\tools\IDE\Kei
+l_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Inclu
+de --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__U
+VISION_VERSION SETA 524" --predefine="_RTE_ SETA 1" --predefine="STM32F401xE SE
+TA 1" --list=.\listings\os_start.lst Source\OS_start.s
+335 symbols in table

@@ -1,0 +1,17 @@
+.\objects\os_tmr.o: Source\os_tmr.c
+.\objects\os_tmr.o: .\Source\ucos_ii.h
+.\objects\os_tmr.o: .\Cfg\app_cfg.h
+.\objects\os_tmr.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\os_tmr.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\os_tmr.o: .\Cfg\os_cfg.h
+.\objects\os_tmr.o: .\Source\os_cpu.h
+.\objects\os_tmr.o: .\Source\os_trace.h
+.\objects\os_tmr.o: .\Sys_View_Src\os_trace_events.h
+.\objects\os_tmr.o: .\Sys_View_Src\SEGGER_SYSVIEW.h
+.\objects\os_tmr.o: .\Sys_View_Src\SEGGER.h
+.\objects\os_tmr.o: .\Sys_View_Config\Global.h
+.\objects\os_tmr.o: .\Sys_View_Src\SEGGER_SYSVIEW_ConfDefaults.h
+.\objects\os_tmr.o: .\Sys_View_Config\SEGGER_SYSVIEW_Conf.h
+.\objects\os_tmr.o: .\Sys_View_Config\SEGGER_RTT_Conf.h
+.\objects\os_tmr.o: .\Source\ucos_ii.h
+.\objects\os_tmr.o: .\Sys_View_Config\os_cfg_trace.h
