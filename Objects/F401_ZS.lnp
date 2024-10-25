@@ -74,6 +74,7 @@
 ".\objects\segger_rtt_syscalls_keil.o"
 ".\objects\segger_sysview.o"
 ".\objects\segger_sysview_ucosii.o"
+".\objects\gassnewton.o"
 ".\objects\startup_stm32f401xe.o"
 ".\objects\system_stm32f4xx.o"
 --library_type=microlib --strict --scatter ".\Objects\F401_ZS.sct"

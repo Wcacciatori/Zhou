@@ -1327,6 +1327,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>software</GroupName>
+          <Files>
+            <File>
+              <FileName>GassNewton.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\software\GassNewton.c</FilePath>
+            </File>
+            <File>
+              <FileName>GassNewton.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\software\GassNewton.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>

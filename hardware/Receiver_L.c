@@ -276,7 +276,7 @@ void TIM4_IRQHandler(void)
 			} else { //捕获到上升沿
                 TIM4_CAPTURE_STA[i] = 1; //更改捕获状态
                 TIM4_CAPTURE_VAL[i][0] = TIM_GetCapture3(TIM4); //读取上升沿对应计数器值
-								TIM_SetCounter(TIM2, 0);
+								TIM_SetCounter(TIM4, 0);
                 TIM4->CCER |= (0x0001 << (1 + 4 * 2)); //CCxP=01 通道下降沿捕获
             }
 		TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);
