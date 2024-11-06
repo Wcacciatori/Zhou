@@ -177,7 +177,6 @@ Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=.\objects\os_start.d -o.\objects\os_start.o -I.\RTE\_Target_1 -
 ID:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include -ID:\tools\IDE\Kei
 l_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Inclu
-de --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__U
-VISION_VERSION SETA 524" --predefine="_RTE_ SETA 1" --predefine="STM32F401xE SE
-TA 1" --list=.\listings\os_start.lst Source\OS_start.s
-335 symbols in table
+de --predefine="__UVISION_VERSION SETA 524" --predefine="_RTE_ SETA 1" --predef
+ine="STM32F401xE SETA 1" --list=.\listings\os_start.lst Source\OS_start.s
+333 symbols in table

@@ -3,9 +3,11 @@
 
 uint16_t Serial_RxData;
 uint8_t Serial_RxFlag;
+
 extern	OS_EVENT *Sem_Task_UR;
 extern	OS_ERR err;
 
+#define TransUSART USART1
 
 //void Serial_Init()//串口初始化--zhou!备用
 //{
@@ -56,7 +58,7 @@ extern	OS_ERR err;
 //	USART_Cmd(USART6, ENABLE);
 //}
 
-void Serial_Init()//串口初始化--self
+void Serial_Init()//串口初始化--BT
 {
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
@@ -109,15 +111,15 @@ void Serial_Init()//串口初始化--self
 void Serial_SendByte(uint8_t Byte)//发送单个字节
 {
 	//self
-	USART_SendData(USART1, Byte);
-	while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+	USART_SendData(TransUSART, Byte);
+	while(USART_GetFlagStatus(TransUSART, USART_FLAG_TXE) == RESET);
 	
 //	//zhou!
 //	USART_SendData(USART6, Byte);
 //	while(USART_GetFlagStatus(USART6, USART_FLAG_TXE) == RESET);
 }
 
-void Serial_SendArray(int16_t *Array, uint16_t Length)//发送数组
+void Serial_SendArray(uint8_t *Array, uint16_t Length)//发送数组
 {
 	uint16_t i;
 	for (i = 0; i < Length; i ++)
@@ -220,3 +222,26 @@ void USART6_IRQHandler(void)
 
 }
 
+//int SumCheck(){
+//	U8 sumcheck = 0;
+//	U8 addcheck = 0;
+//	for(uint8_t i=0; i < (data_buf[3]+4); i++)
+//	{
+//	sumcheck += data_buf[i]; //从帧头开始，对每一字节进行求和，直到DATA区结束
+//	addcheck += sumcheck; //每一字节的求和操作，进行一次sumcheck的累加
+//	}
+//	//如果计算出的sumcheck和addcheck和接收到的check数据相等，代表校验通过，反之数据有误
+//	if(sumcheck == data_buf[data_buf[3]+4] && addcheck == data_buf[data_buf[3]+5])
+//	return 1; //校验通过
+//	else
+//	return 0; //校验失败
+
+//}
+
+void compute_check(uint8_t *sumcheck, uint8_t *addcheck, uint8_t data_buf[19]){
+	for(uint8_t i=0; i < (data_buf[3]+4); i++)
+	{
+	*sumcheck += data_buf[i]; //从帧头开始，对每一字节进行求和，直到DATA区结束
+	*addcheck += *sumcheck; //每一字节的求和操作，进行一次sumcheck的累加
+	}
+}

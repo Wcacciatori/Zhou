@@ -173,6 +173,21 @@ Reset_Handler    PROC
         IMPORT  SystemInit
         IMPORT  __main
 
+				;IF {FPU} != "SoftVFP"
+				;LDR R0,=0xE000ED88 ;Ê¹ÄÜFPU CP10 CP11
+				;LDR R1,[R0]
+				;ORR R1,R1,#(0XF << 20)
+				;STR R1,[R0]
+				;DSB
+								
+				;LDR.W R0,=0xE000EF34
+				;LDR R1,[R0]
+				;AND R1,R1,#(0x3FFFFFFF)
+				;STR R1,[R0]
+				;ISB
+				;ENDIF
+
+
                  LDR     R0, =SystemInit
                  BLX     R0
                  LDR     R0, =__main

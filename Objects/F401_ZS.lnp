@@ -75,9 +75,10 @@
 ".\objects\segger_sysview.o"
 ".\objects\segger_sysview_ucosii.o"
 ".\objects\gassnewton.o"
+".\objects\posecalculate.o"
 ".\objects\startup_stm32f401xe.o"
 ".\objects\system_stm32f4xx.o"
---library_type=microlib --strict --scatter ".\Objects\F401_ZS.sct"
+--strict --scatter ".\Objects\F401_ZS.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\Listings\F401_ZS.map" -o .\Objects\F401_ZS.axf

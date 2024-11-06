@@ -29,6 +29,7 @@
 #include "stm32f4xx_usart.h"
 #include "stm32f4xx_tim.h"
 #include "stdio.h"
+#include "stdlib.h"
 #include "stdarg.h"
 #include "misc.h"
 #include "GY86.h"
@@ -41,10 +42,8 @@
 #include "Receiver_L.h"
 #include "OS.h"
 #include "core_cm4.h"
-
-typedef struct{
-	int16_t  AX, AY, AZ, GX, GY, GZ, GA_X, GA_Z, GA_Y;
-}gy86_data;
+#include <math.h>
+#include "PoseCalculate.h"
 
 
 

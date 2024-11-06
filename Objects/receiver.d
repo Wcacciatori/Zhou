@@ -28,6 +28,7 @@
 .\objects\receiver.o: .\library\stm32f4xx_wwdg.h
 .\objects\receiver.o: .\library\misc.h
 .\objects\receiver.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\receiver.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\receiver.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\receiver.o: .\hardware\GY86.h
 .\objects\receiver.o: .\hardware\MyIIC.h
@@ -54,3 +55,5 @@
 .\objects\receiver.o: .\Source\ucos_ii.h
 .\objects\receiver.o: .\Sys_View_Config\os_cfg_trace.h
 .\objects\receiver.o: D:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
+.\objects\receiver.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\receiver.o: .\software\PoseCalculate.h

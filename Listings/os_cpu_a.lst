@@ -632,9 +632,8 @@ Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=.\objects\os_cpu_a.d -o.\objects\os_cpu_a.o -I.\RTE\_Target_1 -
 ID:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include -ID:\tools\IDE\Kei
 l_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Inclu
-de --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__U
-VISION_VERSION SETA 524" --predefine="_RTE_ SETA 1" --predefine="STM32F401xE SE
-TA 1" --list=.\listings\os_cpu_a.lst Source\os_cpu_a.asm
+de --predefine="__UVISION_VERSION SETA 524" --predefine="_RTE_ SETA 1" --predef
+ine="STM32F401xE SETA 1" --list=.\listings\os_cpu_a.lst Source\os_cpu_a.asm
 
 
 
@@ -859,4 +858,4 @@ Symbol: OS_KA_BASEPRI_Boundary
       At line 331 in file Source\os_cpu_a.asm
 Comment: OS_KA_BASEPRI_Boundary used once
 9 symbols
-361 symbols in table
+359 symbols in table

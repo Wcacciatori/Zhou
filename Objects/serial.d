@@ -31,6 +31,7 @@
 .\objects\serial.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\serial.o: .\system\Delay.h
 .\objects\serial.o: .\User\main.h
+.\objects\serial.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\serial.o: .\hardware\GY86.h
 .\objects\serial.o: .\hardware\MyIIC.h
 .\objects\serial.o: .\hardware\OLED.h
@@ -54,3 +55,5 @@
 .\objects\serial.o: .\Source\ucos_ii.h
 .\objects\serial.o: .\Sys_View_Config\os_cfg_trace.h
 .\objects\serial.o: D:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
+.\objects\serial.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\serial.o: .\software\PoseCalculate.h

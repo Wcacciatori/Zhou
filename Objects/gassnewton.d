@@ -28,6 +28,7 @@
 .\objects\gassnewton.o: .\library\stm32f4xx_wwdg.h
 .\objects\gassnewton.o: .\library\misc.h
 .\objects\gassnewton.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\gassnewton.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\gassnewton.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\gassnewton.o: .\hardware\GY86.h
 .\objects\gassnewton.o: .\hardware\MyIIC.h
@@ -54,3 +55,5 @@
 .\objects\gassnewton.o: .\Source\ucos_ii.h
 .\objects\gassnewton.o: .\Sys_View_Config\os_cfg_trace.h
 .\objects\gassnewton.o: D:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
+.\objects\gassnewton.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\gassnewton.o: .\software\PoseCalculate.h

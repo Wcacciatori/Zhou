@@ -436,304 +436,330 @@ ARM Macro Assembler    Page 7
   173 00000000                 IMPORT           SystemInit
   174 00000000                 IMPORT           __main
   175 00000000         
-  176 00000000 4806            LDR              R0, =SystemInit
-  177 00000002 4780            BLX              R0
-  178 00000004 4806            LDR              R0, =__main
-  179 00000006 4700            BX               R0
-  180 00000008                 ENDP
-  181 00000008         
-  182 00000008         ; Dummy Exception Handlers (infinite loops which can be 
-                       modified)
-  183 00000008         
-  184 00000008         NMI_Handler
-                               PROC
-  185 00000008                 EXPORT           NMI_Handler                [WEA
-K]
-  186 00000008 E7FE            B                .
-  187 0000000A                 ENDP
-  189 0000000A         HardFault_Handler
-                               PROC
+  176 00000000         ;IF {FPU} != "SoftVFP"
+  177 00000000         ;LDR R0,=0xE000ED88 ;Ê¹ÄÜFPU CP10 CP11
+  178 00000000         ;LDR R1,[R0]
+  179 00000000         ;ORR R1,R1,#(0XF << 20)
+  180 00000000         ;STR R1,[R0]
+  181 00000000         ;DSB
+  182 00000000         
+  183 00000000         ;LDR.W R0,=0xE000EF34
+  184 00000000         ;LDR R1,[R0]
+  185 00000000         ;AND R1,R1,#(0x3FFFFFFF)
+  186 00000000         ;STR R1,[R0]
+  187 00000000         ;ISB
+  188 00000000         ;ENDIF
+  189 00000000         
+  190 00000000         
+  191 00000000 4809            LDR              R0, =SystemInit
+  192 00000002 4780            BLX              R0
 
 
 
 ARM Macro Assembler    Page 8 
 
 
-  190 0000000A                 EXPORT           HardFault_Handler          [WEA
-K]
-  191 0000000A E7FE            B                .
-  192 0000000C                 ENDP
-  194 0000000C         MemManage_Handler
+  193 00000004 4809            LDR              R0, =__main
+  194 00000006 4700            BX               R0
+  195 00000008                 ENDP
+  196 00000008         
+  197 00000008         ; Dummy Exception Handlers (infinite loops which can be 
+                       modified)
+  198 00000008         
+  199 00000008         NMI_Handler
                                PROC
-  195 0000000C                 EXPORT           MemManage_Handler          [WEA
+  200 00000008                 EXPORT           NMI_Handler                [WEA
 K]
-  196 0000000C E7FE            B                .
-  197 0000000E                 ENDP
-  199 0000000E         BusFault_Handler
+  201 00000008 E7FE            B                .
+  202 0000000A                 ENDP
+  204 0000000A         HardFault_Handler
                                PROC
-  200 0000000E                 EXPORT           BusFault_Handler           [WEA
+  205 0000000A                 EXPORT           HardFault_Handler          [WEA
 K]
-  201 0000000E E7FE            B                .
-  202 00000010                 ENDP
-  204 00000010         UsageFault_Handler
+  206 0000000A E7FE            B                .
+  207 0000000C                 ENDP
+  209 0000000C         MemManage_Handler
                                PROC
-  205 00000010                 EXPORT           UsageFault_Handler         [WEA
+  210 0000000C                 EXPORT           MemManage_Handler          [WEA
 K]
-  206 00000010 E7FE            B                .
-  207 00000012                 ENDP
-  208 00000012         SVC_Handler
+  211 0000000C E7FE            B                .
+  212 0000000E                 ENDP
+  214 0000000E         BusFault_Handler
                                PROC
-  209 00000012                 EXPORT           SVC_Handler                [WEA
+  215 0000000E                 EXPORT           BusFault_Handler           [WEA
 K]
-  210 00000012 E7FE            B                .
-  211 00000014                 ENDP
-  213 00000014         DebugMon_Handler
+  216 0000000E E7FE            B                .
+  217 00000010                 ENDP
+  219 00000010         UsageFault_Handler
                                PROC
-  214 00000014                 EXPORT           DebugMon_Handler           [WEA
+  220 00000010                 EXPORT           UsageFault_Handler         [WEA
 K]
-  215 00000014 E7FE            B                .
-  216 00000016                 ENDP
-  217 00000016         OS_CPU_PendSVHandler
+  221 00000010 E7FE            B                .
+  222 00000012                 ENDP
+  223 00000012         SVC_Handler
                                PROC
-  218 00000016                 EXPORT           OS_CPU_PendSVHandler           
+  224 00000012                 EXPORT           SVC_Handler                [WEA
+K]
+  225 00000012 E7FE            B                .
+  226 00000014                 ENDP
+  228 00000014         DebugMon_Handler
+                               PROC
+  229 00000014                 EXPORT           DebugMon_Handler           [WEA
+K]
+  230 00000014 E7FE            B                .
+  231 00000016                 ENDP
+  232 00000016         OS_CPU_PendSVHandler
+                               PROC
+  233 00000016                 EXPORT           OS_CPU_PendSVHandler           
   [WEAK]
-  219 00000016 E7FE            B                .
-  220 00000018                 ENDP
-  221 00000018         OS_CPU_SysTickHandler
+  234 00000016 E7FE            B                .
+  235 00000018                 ENDP
+  236 00000018         OS_CPU_SysTickHandler
                                PROC
-  222 00000018                 EXPORT           OS_CPU_SysTickHandler          
+  237 00000018                 EXPORT           OS_CPU_SysTickHandler          
   [WEAK]
-  223 00000018 E7FE            B                .
-  224 0000001A                 ENDP
-  225 0000001A         
-  226 0000001A         Default_Handler
-                               PROC
-  227 0000001A         
-  228 0000001A                 EXPORT           WWDG_IRQHandler                
-   [WEAK]
-  229 0000001A                 EXPORT           PVD_IRQHandler                 
-   [WEAK]
-  230 0000001A                 EXPORT           TAMP_STAMP_IRQHandler          
-   [WEAK]
-  231 0000001A                 EXPORT           RTC_WKUP_IRQHandler            
-   [WEAK]
-  232 0000001A                 EXPORT           FLASH_IRQHandler               
 
 
 
 ARM Macro Assembler    Page 9 
 
 
+  238 00000018 E7FE            B                .
+  239 0000001A                 ENDP
+  240 0000001A         
+  241 0000001A         Default_Handler
+                               PROC
+  242 0000001A         
+  243 0000001A                 EXPORT           WWDG_IRQHandler                
    [WEAK]
-  233 0000001A                 EXPORT           RCC_IRQHandler                 
+  244 0000001A                 EXPORT           PVD_IRQHandler                 
    [WEAK]
-  234 0000001A                 EXPORT           EXTI0_IRQHandler               
+  245 0000001A                 EXPORT           TAMP_STAMP_IRQHandler          
    [WEAK]
-  235 0000001A                 EXPORT           EXTI1_IRQHandler               
+  246 0000001A                 EXPORT           RTC_WKUP_IRQHandler            
    [WEAK]
-  236 0000001A                 EXPORT           EXTI2_IRQHandler               
+  247 0000001A                 EXPORT           FLASH_IRQHandler               
    [WEAK]
-  237 0000001A                 EXPORT           EXTI3_IRQHandler               
+  248 0000001A                 EXPORT           RCC_IRQHandler                 
    [WEAK]
-  238 0000001A                 EXPORT           EXTI4_IRQHandler               
+  249 0000001A                 EXPORT           EXTI0_IRQHandler               
    [WEAK]
-  239 0000001A                 EXPORT           DMA1_Stream0_IRQHandler        
+  250 0000001A                 EXPORT           EXTI1_IRQHandler               
    [WEAK]
-  240 0000001A                 EXPORT           DMA1_Stream1_IRQHandler        
+  251 0000001A                 EXPORT           EXTI2_IRQHandler               
    [WEAK]
-  241 0000001A                 EXPORT           DMA1_Stream2_IRQHandler        
+  252 0000001A                 EXPORT           EXTI3_IRQHandler               
    [WEAK]
-  242 0000001A                 EXPORT           DMA1_Stream3_IRQHandler        
+  253 0000001A                 EXPORT           EXTI4_IRQHandler               
    [WEAK]
-  243 0000001A                 EXPORT           DMA1_Stream4_IRQHandler        
+  254 0000001A                 EXPORT           DMA1_Stream0_IRQHandler        
    [WEAK]
-  244 0000001A                 EXPORT           DMA1_Stream5_IRQHandler        
+  255 0000001A                 EXPORT           DMA1_Stream1_IRQHandler        
    [WEAK]
-  245 0000001A                 EXPORT           DMA1_Stream6_IRQHandler        
+  256 0000001A                 EXPORT           DMA1_Stream2_IRQHandler        
    [WEAK]
-  246 0000001A                 EXPORT           ADC_IRQHandler                 
+  257 0000001A                 EXPORT           DMA1_Stream3_IRQHandler        
    [WEAK]
-  247 0000001A                 EXPORT           EXTI9_5_IRQHandler             
+  258 0000001A                 EXPORT           DMA1_Stream4_IRQHandler        
    [WEAK]
-  248 0000001A                 EXPORT           TIM1_BRK_TIM9_IRQHandler       
+  259 0000001A                 EXPORT           DMA1_Stream5_IRQHandler        
    [WEAK]
-  249 0000001A                 EXPORT           TIM1_UP_TIM10_IRQHandler       
+  260 0000001A                 EXPORT           DMA1_Stream6_IRQHandler        
    [WEAK]
-  250 0000001A                 EXPORT           TIM1_TRG_COM_TIM11_IRQHandler  
+  261 0000001A                 EXPORT           ADC_IRQHandler                 
    [WEAK]
-  251 0000001A                 EXPORT           TIM1_CC_IRQHandler             
+  262 0000001A                 EXPORT           EXTI9_5_IRQHandler             
    [WEAK]
-  252 0000001A                 EXPORT           TIM2_IRQHandler                
+  263 0000001A                 EXPORT           TIM1_BRK_TIM9_IRQHandler       
    [WEAK]
-  253 0000001A                 EXPORT           TIM3_IRQHandler                
+  264 0000001A                 EXPORT           TIM1_UP_TIM10_IRQHandler       
    [WEAK]
-  254 0000001A                 EXPORT           TIM4_IRQHandler                
+  265 0000001A                 EXPORT           TIM1_TRG_COM_TIM11_IRQHandler  
    [WEAK]
-  255 0000001A                 EXPORT           I2C1_EV_IRQHandler             
+  266 0000001A                 EXPORT           TIM1_CC_IRQHandler             
    [WEAK]
-  256 0000001A                 EXPORT           I2C1_ER_IRQHandler             
+  267 0000001A                 EXPORT           TIM2_IRQHandler                
    [WEAK]
-  257 0000001A                 EXPORT           I2C2_EV_IRQHandler             
+  268 0000001A                 EXPORT           TIM3_IRQHandler                
    [WEAK]
-  258 0000001A                 EXPORT           I2C2_ER_IRQHandler             
-   [WEAK]
-  259 0000001A                 EXPORT           SPI1_IRQHandler                
-   [WEAK]
-  260 0000001A                 EXPORT           SPI2_IRQHandler                
-   [WEAK]
-  261 0000001A                 EXPORT           USART1_IRQHandler              
-   [WEAK]
+  269 0000001A                 EXPORT           TIM4_IRQHandler                
 
 
 
 ARM Macro Assembler    Page 10 
 
 
-  262 0000001A                 EXPORT           USART2_IRQHandler              
    [WEAK]
-  263 0000001A                 EXPORT           EXTI15_10_IRQHandler           
+  270 0000001A                 EXPORT           I2C1_EV_IRQHandler             
    [WEAK]
-  264 0000001A                 EXPORT           RTC_Alarm_IRQHandler           
+  271 0000001A                 EXPORT           I2C1_ER_IRQHandler             
    [WEAK]
-  265 0000001A                 EXPORT           OTG_FS_WKUP_IRQHandler         
+  272 0000001A                 EXPORT           I2C2_EV_IRQHandler             
    [WEAK]
-  266 0000001A                 EXPORT           DMA1_Stream7_IRQHandler        
+  273 0000001A                 EXPORT           I2C2_ER_IRQHandler             
    [WEAK]
-  267 0000001A                 EXPORT           SDIO_IRQHandler                
+  274 0000001A                 EXPORT           SPI1_IRQHandler                
    [WEAK]
-  268 0000001A                 EXPORT           TIM5_IRQHandler                
+  275 0000001A                 EXPORT           SPI2_IRQHandler                
    [WEAK]
-  269 0000001A                 EXPORT           SPI3_IRQHandler                
+  276 0000001A                 EXPORT           USART1_IRQHandler              
    [WEAK]
-  270 0000001A                 EXPORT           DMA2_Stream0_IRQHandler        
+  277 0000001A                 EXPORT           USART2_IRQHandler              
    [WEAK]
-  271 0000001A                 EXPORT           DMA2_Stream1_IRQHandler        
+  278 0000001A                 EXPORT           EXTI15_10_IRQHandler           
    [WEAK]
-  272 0000001A                 EXPORT           DMA2_Stream2_IRQHandler        
+  279 0000001A                 EXPORT           RTC_Alarm_IRQHandler           
    [WEAK]
-  273 0000001A                 EXPORT           DMA2_Stream3_IRQHandler        
+  280 0000001A                 EXPORT           OTG_FS_WKUP_IRQHandler         
    [WEAK]
-  274 0000001A                 EXPORT           DMA2_Stream4_IRQHandler        
+  281 0000001A                 EXPORT           DMA1_Stream7_IRQHandler        
    [WEAK]
-  275 0000001A                 EXPORT           OTG_FS_IRQHandler              
+  282 0000001A                 EXPORT           SDIO_IRQHandler                
    [WEAK]
-  276 0000001A                 EXPORT           DMA2_Stream5_IRQHandler        
+  283 0000001A                 EXPORT           TIM5_IRQHandler                
    [WEAK]
-  277 0000001A                 EXPORT           DMA2_Stream6_IRQHandler        
+  284 0000001A                 EXPORT           SPI3_IRQHandler                
    [WEAK]
-  278 0000001A                 EXPORT           DMA2_Stream7_IRQHandler        
+  285 0000001A                 EXPORT           DMA2_Stream0_IRQHandler        
    [WEAK]
-  279 0000001A                 EXPORT           USART6_IRQHandler              
+  286 0000001A                 EXPORT           DMA2_Stream1_IRQHandler        
    [WEAK]
-  280 0000001A                 EXPORT           I2C3_EV_IRQHandler             
+  287 0000001A                 EXPORT           DMA2_Stream2_IRQHandler        
    [WEAK]
-  281 0000001A                 EXPORT           I2C3_ER_IRQHandler             
+  288 0000001A                 EXPORT           DMA2_Stream3_IRQHandler        
    [WEAK]
-  282 0000001A                 EXPORT           FPU_IRQHandler                 
+  289 0000001A                 EXPORT           DMA2_Stream4_IRQHandler        
    [WEAK]
-  283 0000001A                 EXPORT           SPI4_IRQHandler                
+  290 0000001A                 EXPORT           OTG_FS_IRQHandler              
    [WEAK]
-  284 0000001A         
-  285 0000001A         WWDG_IRQHandler
-  286 0000001A         PVD_IRQHandler
-  287 0000001A         TAMP_STAMP_IRQHandler
-  288 0000001A         RTC_WKUP_IRQHandler
-  289 0000001A         FLASH_IRQHandler
-  290 0000001A         RCC_IRQHandler
-  291 0000001A         EXTI0_IRQHandler
-  292 0000001A         EXTI1_IRQHandler
-  293 0000001A         EXTI2_IRQHandler
-  294 0000001A         EXTI3_IRQHandler
-  295 0000001A         EXTI4_IRQHandler
-  296 0000001A         DMA1_Stream0_IRQHandler
-  297 0000001A         DMA1_Stream1_IRQHandler
-  298 0000001A         DMA1_Stream2_IRQHandler
+  291 0000001A                 EXPORT           DMA2_Stream5_IRQHandler        
+   [WEAK]
+  292 0000001A                 EXPORT           DMA2_Stream6_IRQHandler        
+   [WEAK]
+  293 0000001A                 EXPORT           DMA2_Stream7_IRQHandler        
+   [WEAK]
+  294 0000001A                 EXPORT           USART6_IRQHandler              
+   [WEAK]
+  295 0000001A                 EXPORT           I2C3_EV_IRQHandler             
+   [WEAK]
+  296 0000001A                 EXPORT           I2C3_ER_IRQHandler             
+   [WEAK]
+  297 0000001A                 EXPORT           FPU_IRQHandler                 
+   [WEAK]
+  298 0000001A                 EXPORT           SPI4_IRQHandler                
+   [WEAK]
 
 
 
 ARM Macro Assembler    Page 11 
 
 
-  299 0000001A         DMA1_Stream3_IRQHandler
-  300 0000001A         DMA1_Stream4_IRQHandler
-  301 0000001A         DMA1_Stream5_IRQHandler
-  302 0000001A         DMA1_Stream6_IRQHandler
-  303 0000001A         ADC_IRQHandler
-  304 0000001A         EXTI9_5_IRQHandler
-  305 0000001A         TIM1_BRK_TIM9_IRQHandler
-  306 0000001A         TIM1_UP_TIM10_IRQHandler
-  307 0000001A         TIM1_TRG_COM_TIM11_IRQHandler
-  308 0000001A         TIM1_CC_IRQHandler
-  309 0000001A         TIM2_IRQHandler
-  310 0000001A         TIM3_IRQHandler
-  311 0000001A         TIM4_IRQHandler
-  312 0000001A         I2C1_EV_IRQHandler
-  313 0000001A         I2C1_ER_IRQHandler
-  314 0000001A         I2C2_EV_IRQHandler
-  315 0000001A         I2C2_ER_IRQHandler
-  316 0000001A         SPI1_IRQHandler
-  317 0000001A         SPI2_IRQHandler
-  318 0000001A         USART1_IRQHandler
-  319 0000001A         USART2_IRQHandler
-  320 0000001A         EXTI15_10_IRQHandler
-  321 0000001A         RTC_Alarm_IRQHandler
-  322 0000001A         OTG_FS_WKUP_IRQHandler
-  323 0000001A         DMA1_Stream7_IRQHandler
-  324 0000001A         SDIO_IRQHandler
-  325 0000001A         TIM5_IRQHandler
-  326 0000001A         SPI3_IRQHandler
-  327 0000001A         DMA2_Stream0_IRQHandler
-  328 0000001A         DMA2_Stream1_IRQHandler
-  329 0000001A         DMA2_Stream2_IRQHandler
-  330 0000001A         DMA2_Stream3_IRQHandler
-  331 0000001A         DMA2_Stream4_IRQHandler
-  332 0000001A         OTG_FS_IRQHandler
-  333 0000001A         DMA2_Stream5_IRQHandler
-  334 0000001A         DMA2_Stream6_IRQHandler
-  335 0000001A         DMA2_Stream7_IRQHandler
-  336 0000001A         USART6_IRQHandler
-  337 0000001A         I2C3_EV_IRQHandler
-  338 0000001A         I2C3_ER_IRQHandler
-  339 0000001A         FPU_IRQHandler
-  340 0000001A         SPI4_IRQHandler
-  341 0000001A         
-  342 0000001A E7FE            B                .
-  343 0000001C         
-  344 0000001C                 ENDP
-  345 0000001C         
-  346 0000001C                 ALIGN
-  347 0000001C         
-  348 0000001C         ;*******************************************************
-                       ************************
-  349 0000001C         ; User Stack and Heap initialization  IRQ
-  350 0000001C         ;*******************************************************
-                       ************************
-  351 0000001C                 IF               :DEF:__MICROLIB
-  352 0000001C         
-  353 0000001C                 EXPORT           __initial_sp
-  354 0000001C                 EXPORT           __heap_base
-  355 0000001C                 EXPORT           __heap_limit
+  299 0000001A         
+  300 0000001A         WWDG_IRQHandler
+  301 0000001A         PVD_IRQHandler
+  302 0000001A         TAMP_STAMP_IRQHandler
+  303 0000001A         RTC_WKUP_IRQHandler
+  304 0000001A         FLASH_IRQHandler
+  305 0000001A         RCC_IRQHandler
+  306 0000001A         EXTI0_IRQHandler
+  307 0000001A         EXTI1_IRQHandler
+  308 0000001A         EXTI2_IRQHandler
+  309 0000001A         EXTI3_IRQHandler
+  310 0000001A         EXTI4_IRQHandler
+  311 0000001A         DMA1_Stream0_IRQHandler
+  312 0000001A         DMA1_Stream1_IRQHandler
+  313 0000001A         DMA1_Stream2_IRQHandler
+  314 0000001A         DMA1_Stream3_IRQHandler
+  315 0000001A         DMA1_Stream4_IRQHandler
+  316 0000001A         DMA1_Stream5_IRQHandler
+  317 0000001A         DMA1_Stream6_IRQHandler
+  318 0000001A         ADC_IRQHandler
+  319 0000001A         EXTI9_5_IRQHandler
+  320 0000001A         TIM1_BRK_TIM9_IRQHandler
+  321 0000001A         TIM1_UP_TIM10_IRQHandler
+  322 0000001A         TIM1_TRG_COM_TIM11_IRQHandler
+  323 0000001A         TIM1_CC_IRQHandler
+  324 0000001A         TIM2_IRQHandler
+  325 0000001A         TIM3_IRQHandler
+  326 0000001A         TIM4_IRQHandler
+  327 0000001A         I2C1_EV_IRQHandler
+  328 0000001A         I2C1_ER_IRQHandler
+  329 0000001A         I2C2_EV_IRQHandler
+  330 0000001A         I2C2_ER_IRQHandler
+  331 0000001A         SPI1_IRQHandler
+  332 0000001A         SPI2_IRQHandler
+  333 0000001A         USART1_IRQHandler
+  334 0000001A         USART2_IRQHandler
+  335 0000001A         EXTI15_10_IRQHandler
+  336 0000001A         RTC_Alarm_IRQHandler
+  337 0000001A         OTG_FS_WKUP_IRQHandler
+  338 0000001A         DMA1_Stream7_IRQHandler
+  339 0000001A         SDIO_IRQHandler
+  340 0000001A         TIM5_IRQHandler
+  341 0000001A         SPI3_IRQHandler
+  342 0000001A         DMA2_Stream0_IRQHandler
+  343 0000001A         DMA2_Stream1_IRQHandler
+  344 0000001A         DMA2_Stream2_IRQHandler
+  345 0000001A         DMA2_Stream3_IRQHandler
+  346 0000001A         DMA2_Stream4_IRQHandler
+  347 0000001A         OTG_FS_IRQHandler
+  348 0000001A         DMA2_Stream5_IRQHandler
+  349 0000001A         DMA2_Stream6_IRQHandler
+  350 0000001A         DMA2_Stream7_IRQHandler
+  351 0000001A         USART6_IRQHandler
+  352 0000001A         I2C3_EV_IRQHandler
+  353 0000001A         I2C3_ER_IRQHandler
+  354 0000001A         FPU_IRQHandler
+  355 0000001A         SPI4_IRQHandler
+  356 0000001A         
+  357 0000001A E7FE            B                .
 
 
 
 ARM Macro Assembler    Page 12 
 
 
-  356 0000001C         
-  357 0000001C                 ELSE
-  372                          ENDIF
+  358 0000001C         
+  359 0000001C                 ENDP
+  360 0000001C         
+  361 0000001C                 ALIGN
+  362 0000001C         
+  363 0000001C         ;*******************************************************
+                       ************************
+  364 0000001C         ; User Stack and Heap initialization  IRQ
+  365 0000001C         ;*******************************************************
+                       ************************
+  366 0000001C                 IF               :DEF:__MICROLIB
   373 0000001C         
-  374 0000001C                 END
+  374 0000001C                 IMPORT           __use_two_region_memory
+  375 0000001C                 EXPORT           __user_initial_stackheap
+  376 0000001C         
+  377 0000001C         __user_initial_stackheap
+  378 0000001C         
+  379 0000001C 4804            LDR              R0, =  Heap_Mem
+  380 0000001E 4905            LDR              R1, =(Stack_Mem + Stack_Size)
+  381 00000020 4A05            LDR              R2, = (Heap_Mem +  Heap_Size)
+  382 00000022 4B06            LDR              R3, = Stack_Mem
+  383 00000024 4770            BX               LR
+  384 00000026         
+  385 00000026 00 00           ALIGN
+  386 00000028         
+  387 00000028                 ENDIF
+  388 00000028         
+  389 00000028                 END
               00000000 
+              00000000 
+              00000000 
+              00000400 
+              00000200 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=.\objects\startup_stm32f401xe.d -o.\objects\startup_stm32f401xe
 .o -I.\RTE\_Target_1 -ID:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Incl
 ude -ID:\tools\IDE\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Dev
-ice\ST\STM32F4xx\Include --predefine="__EVAL SETA 1" --predefine="__MICROLIB SE
-TA 1" --predefine="__UVISION_VERSION SETA 524" --predefine="_RTE_ SETA 1" --pre
-define="STM32F401xE SETA 1" --list=.\listings\startup_stm32f401xe.lst RTE\Devic
-e\STM32F401RETx\startup_stm32f401xe.s
+ice\ST\STM32F4xx\Include --predefine="__UVISION_VERSION SETA 524" --predefine="
+_RTE_ SETA 1" --predefine="STM32F401xE SETA 1" --list=.\listings\startup_stm32f
+401xe.lst RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 
 
@@ -754,8 +780,9 @@ Symbol: Stack_Mem
    Definitions
       At line 35 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
-      None
-Comment: Stack_Mem unused
+      At line 380 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 382 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+
 __initial_sp 00000400
 
 Symbol: __initial_sp
@@ -763,8 +790,7 @@ Symbol: __initial_sp
       At line 36 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 60 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 353 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-
+Comment: __initial_sp used once
 3 symbols
 
 
@@ -786,24 +812,25 @@ Symbol: Heap_Mem
    Definitions
       At line 47 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
-      None
-Comment: Heap_Mem unused
+      At line 379 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 381 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+
 __heap_base 00000000
 
 Symbol: __heap_base
    Definitions
       At line 46 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
-      At line 354 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-Comment: __heap_base used once
+      None
+Comment: __heap_base unused
 __heap_limit 00000200
 
 Symbol: __heap_limit
    Definitions
       At line 48 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
-      At line 355 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-Comment: __heap_limit used once
+      None
+Comment: __heap_limit unused
 4 symbols
 
 
@@ -856,52 +883,52 @@ ADC_IRQHandler 0000001A
 
 Symbol: ADC_IRQHandler
    Definitions
-      At line 303 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 318 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 96 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 246 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 261 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 BusFault_Handler 0000000E
 
 Symbol: BusFault_Handler
    Definitions
-      At line 199 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 214 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 65 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 200 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 215 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream0_IRQHandler 0000001A
 
 Symbol: DMA1_Stream0_IRQHandler
    Definitions
-      At line 296 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 311 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 89 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 239 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 254 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream1_IRQHandler 0000001A
 
 Symbol: DMA1_Stream1_IRQHandler
    Definitions
-      At line 297 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 312 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 90 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 240 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 255 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream2_IRQHandler 0000001A
 
 Symbol: DMA1_Stream2_IRQHandler
    Definitions
-      At line 298 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 313 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 91 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 241 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 256 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream3_IRQHandler 0000001A
 
 Symbol: DMA1_Stream3_IRQHandler
    Definitions
-      At line 299 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 314 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
 
 
@@ -910,61 +937,61 @@ ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 Relocatable symbols
 
       At line 92 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 242 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 257 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream4_IRQHandler 0000001A
 
 Symbol: DMA1_Stream4_IRQHandler
    Definitions
-      At line 300 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 315 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 93 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 243 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 258 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream5_IRQHandler 0000001A
 
 Symbol: DMA1_Stream5_IRQHandler
    Definitions
-      At line 301 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 316 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 94 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 244 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 259 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream6_IRQHandler 0000001A
 
 Symbol: DMA1_Stream6_IRQHandler
    Definitions
-      At line 302 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 317 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 95 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 245 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 260 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA1_Stream7_IRQHandler 0000001A
 
 Symbol: DMA1_Stream7_IRQHandler
    Definitions
-      At line 323 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 338 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 125 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 266 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 281 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream0_IRQHandler 0000001A
 
 Symbol: DMA2_Stream0_IRQHandler
    Definitions
-      At line 327 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 342 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 134 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 270 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 285 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream1_IRQHandler 0000001A
 
 Symbol: DMA2_Stream1_IRQHandler
    Definitions
-      At line 328 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 343 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 135 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 271 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 286 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream2_IRQHandler 0000001A
 
@@ -976,61 +1003,61 @@ Relocatable symbols
 
 Symbol: DMA2_Stream2_IRQHandler
    Definitions
-      At line 329 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 344 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 136 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 272 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 287 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream3_IRQHandler 0000001A
 
 Symbol: DMA2_Stream3_IRQHandler
    Definitions
-      At line 330 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 345 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 137 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 273 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 288 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream4_IRQHandler 0000001A
 
 Symbol: DMA2_Stream4_IRQHandler
    Definitions
-      At line 331 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 346 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 138 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 274 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 289 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream5_IRQHandler 0000001A
 
 Symbol: DMA2_Stream5_IRQHandler
    Definitions
-      At line 333 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 348 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 146 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 276 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 291 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream6_IRQHandler 0000001A
 
 Symbol: DMA2_Stream6_IRQHandler
    Definitions
-      At line 334 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 349 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 147 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 277 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 292 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DMA2_Stream7_IRQHandler 0000001A
 
 Symbol: DMA2_Stream7_IRQHandler
    Definitions
-      At line 335 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 350 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 148 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 278 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 293 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 DebugMon_Handler 00000014
 
 Symbol: DebugMon_Handler
    Definitions
-      At line 213 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 228 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 72 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
@@ -1039,13 +1066,13 @@ Symbol: DebugMon_Handler
 ARM Macro Assembler    Page 4 Alphabetic symbol ordering
 Relocatable symbols
 
-      At line 214 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 229 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 Default_Handler 0000001A
 
 Symbol: Default_Handler
    Definitions
-      At line 226 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 241 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       None
 Comment: Default_Handler unused
@@ -1053,46 +1080,46 @@ EXTI0_IRQHandler 0000001A
 
 Symbol: EXTI0_IRQHandler
    Definitions
-      At line 291 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 306 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 84 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 234 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 249 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 EXTI15_10_IRQHandler 0000001A
 
 Symbol: EXTI15_10_IRQHandler
    Definitions
-      At line 320 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 335 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 118 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 263 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 278 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 EXTI1_IRQHandler 0000001A
 
 Symbol: EXTI1_IRQHandler
    Definitions
-      At line 292 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 307 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 85 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 235 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 250 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 EXTI2_IRQHandler 0000001A
 
 Symbol: EXTI2_IRQHandler
    Definitions
-      At line 293 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 308 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 86 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 236 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 251 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 EXTI3_IRQHandler 0000001A
 
 Symbol: EXTI3_IRQHandler
    Definitions
-      At line 294 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 309 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 87 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 237 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 252 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 EXTI4_IRQHandler 0000001A
 
@@ -1104,64 +1131,64 @@ Symbol: EXTI4_IRQHandler
 ARM Macro Assembler    Page 5 Alphabetic symbol ordering
 Relocatable symbols
 
-      At line 295 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 310 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 88 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 238 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 253 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 EXTI9_5_IRQHandler 0000001A
 
 Symbol: EXTI9_5_IRQHandler
    Definitions
-      At line 304 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 319 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 101 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 247 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 262 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 FLASH_IRQHandler 0000001A
 
 Symbol: FLASH_IRQHandler
    Definitions
-      At line 289 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 304 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 82 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 232 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 247 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 FPU_IRQHandler 0000001A
 
 Symbol: FPU_IRQHandler
    Definitions
-      At line 339 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 354 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 159 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 282 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 297 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 HardFault_Handler 0000000A
 
 Symbol: HardFault_Handler
    Definitions
-      At line 189 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 204 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 63 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 190 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 205 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 I2C1_ER_IRQHandler 0000001A
 
 Symbol: I2C1_ER_IRQHandler
    Definitions
-      At line 313 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 328 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 110 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 256 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 271 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 I2C1_EV_IRQHandler 0000001A
 
 Symbol: I2C1_EV_IRQHandler
    Definitions
-      At line 312 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 327 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 109 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 255 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 270 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 
 
@@ -1173,61 +1200,61 @@ I2C2_ER_IRQHandler 0000001A
 
 Symbol: I2C2_ER_IRQHandler
    Definitions
-      At line 315 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 330 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 112 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 258 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 273 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 I2C2_EV_IRQHandler 0000001A
 
 Symbol: I2C2_EV_IRQHandler
    Definitions
-      At line 314 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 329 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 111 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 257 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 272 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 I2C3_ER_IRQHandler 0000001A
 
 Symbol: I2C3_ER_IRQHandler
    Definitions
-      At line 338 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 353 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 151 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 281 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 296 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 I2C3_EV_IRQHandler 0000001A
 
 Symbol: I2C3_EV_IRQHandler
    Definitions
-      At line 337 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 352 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 150 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 280 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 295 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 MemManage_Handler 0000000C
 
 Symbol: MemManage_Handler
    Definitions
-      At line 194 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 209 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 64 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 195 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 210 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 NMI_Handler 00000008
 
 Symbol: NMI_Handler
    Definitions
-      At line 184 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 199 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 62 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 185 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 200 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 OS_CPU_PendSVHandler 00000016
 
 Symbol: OS_CPU_PendSVHandler
    Definitions
-      At line 217 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 232 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 
 
@@ -1236,61 +1263,61 @@ Relocatable symbols
 
    Uses
       At line 74 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 218 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 233 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 OS_CPU_SysTickHandler 00000018
 
 Symbol: OS_CPU_SysTickHandler
    Definitions
-      At line 221 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 236 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 75 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 222 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 237 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 OTG_FS_IRQHandler 0000001A
 
 Symbol: OTG_FS_IRQHandler
    Definitions
-      At line 332 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 347 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 145 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 275 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 290 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 OTG_FS_WKUP_IRQHandler 0000001A
 
 Symbol: OTG_FS_WKUP_IRQHandler
    Definitions
-      At line 322 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 337 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 120 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 265 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 280 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 PVD_IRQHandler 0000001A
 
 Symbol: PVD_IRQHandler
    Definitions
-      At line 286 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 301 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 79 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 229 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 244 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 RCC_IRQHandler 0000001A
 
 Symbol: RCC_IRQHandler
    Definitions
-      At line 290 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 305 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 83 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 233 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 248 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 RTC_Alarm_IRQHandler 0000001A
 
 Symbol: RTC_Alarm_IRQHandler
    Definitions
-      At line 321 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 336 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 119 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 264 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 279 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 RTC_WKUP_IRQHandler 0000001A
 
@@ -1302,10 +1329,10 @@ Relocatable symbols
 
 Symbol: RTC_WKUP_IRQHandler
    Definitions
-      At line 288 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 303 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 81 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 231 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 246 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 Reset_Handler 00000000
 
@@ -1320,43 +1347,43 @@ SDIO_IRQHandler 0000001A
 
 Symbol: SDIO_IRQHandler
    Definitions
-      At line 324 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 339 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 127 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 267 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 282 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 SPI1_IRQHandler 0000001A
 
 Symbol: SPI1_IRQHandler
    Definitions
-      At line 316 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 331 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 113 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 259 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 274 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 SPI2_IRQHandler 0000001A
 
 Symbol: SPI2_IRQHandler
    Definitions
-      At line 317 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 332 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 114 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 260 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 275 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 SPI3_IRQHandler 0000001A
 
 Symbol: SPI3_IRQHandler
    Definitions
-      At line 326 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 341 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 129 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 269 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 284 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 SPI4_IRQHandler 0000001A
 
 Symbol: SPI4_IRQHandler
    Definitions
-      At line 340 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 355 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
 
 
@@ -1365,61 +1392,61 @@ ARM Macro Assembler    Page 9 Alphabetic symbol ordering
 Relocatable symbols
 
       At line 162 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 283 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 298 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 SVC_Handler 00000012
 
 Symbol: SVC_Handler
    Definitions
-      At line 208 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 223 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 71 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 209 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 224 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TAMP_STAMP_IRQHandler 0000001A
 
 Symbol: TAMP_STAMP_IRQHandler
    Definitions
-      At line 287 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 302 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 80 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 230 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 245 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM1_BRK_TIM9_IRQHandler 0000001A
 
 Symbol: TIM1_BRK_TIM9_IRQHandler
    Definitions
-      At line 305 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 320 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 102 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 248 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 263 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM1_CC_IRQHandler 0000001A
 
 Symbol: TIM1_CC_IRQHandler
    Definitions
-      At line 308 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 323 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 105 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 251 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 266 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM1_TRG_COM_TIM11_IRQHandler 0000001A
 
 Symbol: TIM1_TRG_COM_TIM11_IRQHandler
    Definitions
-      At line 307 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 322 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 104 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 250 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 265 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM1_UP_TIM10_IRQHandler 0000001A
 
 Symbol: TIM1_UP_TIM10_IRQHandler
    Definitions
-      At line 306 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 321 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 103 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 249 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 264 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM2_IRQHandler 0000001A
 
@@ -1431,61 +1458,61 @@ Relocatable symbols
 
 Symbol: TIM2_IRQHandler
    Definitions
-      At line 309 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 324 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 106 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 252 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 267 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM3_IRQHandler 0000001A
 
 Symbol: TIM3_IRQHandler
    Definitions
-      At line 310 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 325 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 107 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 253 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 268 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM4_IRQHandler 0000001A
 
 Symbol: TIM4_IRQHandler
    Definitions
-      At line 311 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 326 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 108 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 254 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 269 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 TIM5_IRQHandler 0000001A
 
 Symbol: TIM5_IRQHandler
    Definitions
-      At line 325 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 340 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 128 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 268 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 283 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 USART1_IRQHandler 0000001A
 
 Symbol: USART1_IRQHandler
    Definitions
-      At line 318 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 333 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 115 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 261 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 276 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 USART2_IRQHandler 0000001A
 
 Symbol: USART2_IRQHandler
    Definitions
-      At line 319 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 334 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 116 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 262 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 277 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 USART6_IRQHandler 0000001A
 
 Symbol: USART6_IRQHandler
    Definitions
-      At line 336 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 351 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 149 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
@@ -1494,27 +1521,35 @@ Symbol: USART6_IRQHandler
 ARM Macro Assembler    Page 11 Alphabetic symbol ordering
 Relocatable symbols
 
-      At line 279 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 294 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 UsageFault_Handler 00000010
 
 Symbol: UsageFault_Handler
    Definitions
-      At line 204 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 219 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 66 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 205 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 220 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
 WWDG_IRQHandler 0000001A
 
 Symbol: WWDG_IRQHandler
    Definitions
-      At line 285 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 300 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 78 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-      At line 228 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 243 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 
-68 symbols
+__user_initial_stackheap 0000001C
+
+Symbol: __user_initial_stackheap
+   Definitions
+      At line 377 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+   Uses
+      At line 375 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+Comment: __user_initial_stackheap used once
+69 symbols
 
 
 
@@ -1528,7 +1563,8 @@ Symbol: Heap_Size
       At line 43 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 47 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-Comment: Heap_Size used once
+      At line 381 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+
 Stack_Size 00000400
 
 Symbol: Stack_Size
@@ -1536,7 +1572,8 @@ Symbol: Stack_Size
       At line 32 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
       At line 35 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
-Comment: Stack_Size used once
+      At line 380 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+
 __Vectors_Size 00000194
 
 Symbol: __Vectors_Size
@@ -1558,7 +1595,7 @@ Symbol: SystemInit
    Definitions
       At line 173 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
-      At line 176 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 191 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 Comment: SystemInit used once
 __main 00000000
 
@@ -1566,7 +1603,15 @@ Symbol: __main
    Definitions
       At line 174 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
    Uses
-      At line 178 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+      At line 193 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
 Comment: __main used once
-2 symbols
-421 symbols in table
+__use_two_region_memory 00000000
+
+Symbol: __use_two_region_memory
+   Definitions
+      At line 374 in file RTE\Device\STM32F401RETx\startup_stm32f401xe.s
+   Uses
+      None
+Comment: __use_two_region_memory unused
+3 symbols
+423 symbols in table

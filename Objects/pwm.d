@@ -28,6 +28,7 @@
 .\objects\pwm.o: .\library\stm32f4xx_wwdg.h
 .\objects\pwm.o: .\library\misc.h
 .\objects\pwm.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\pwm.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\pwm.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\pwm.o: .\hardware\GY86.h
 .\objects\pwm.o: .\hardware\MyIIC.h
@@ -54,3 +55,5 @@
 .\objects\pwm.o: .\Source\ucos_ii.h
 .\objects\pwm.o: .\Sys_View_Config\os_cfg_trace.h
 .\objects\pwm.o: D:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
+.\objects\pwm.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\pwm.o: .\software\PoseCalculate.h
