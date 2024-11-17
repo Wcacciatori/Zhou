@@ -13,11 +13,11 @@
 
 大致结构如下图：
 
-![1731846285081](C:\Users\JIANYE~1\AppData\Local\Temp\1731846285081.png)
+![1731846285081](D:\User\Documents\uestc\grade2\stm32\F401_ZS\doc\1731846285081.png)
 
 ## 实物图
 
-![1731846859726](C:\Users\JIANYE~1\AppData\Local\Temp\1731846859726.png)
+![1731846859726](D:\User\Documents\uestc\grade2\stm32\F401_ZS\doc\1731846859726.png)
 
 ## 工程结构
 
