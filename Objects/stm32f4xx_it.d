@@ -58,3 +58,4 @@
 .\objects\stm32f4xx_it.o: D:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
 .\objects\stm32f4xx_it.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\stm32f4xx_it.o: .\software\PoseCalculate.h
+.\objects\stm32f4xx_it.o: .\software\PID.h

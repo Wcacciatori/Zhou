@@ -22,15 +22,35 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\User\Documents\uestc\grade2\stm32\F401_ZS\F401_ZS.uvprojx
-Project File Date:  11/04/2024
+Project File Date:  11/13/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
 compiling GY86.c...
+compiling task.c...
+User\task.c(109): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			madgwick(&q0, &q1, &q2, &q3);
+User\task.c(109): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			madgwick(&q0, &q1, &q2, &q3);
+User\task.c(109): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			madgwick(&q0, &q1, &q2, &q3);
+User\task.c(109): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			madgwick(&q0, &q1, &q2, &q3);
+User\task.c(110): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			updateAngleTmp(&q0, &q1, &q2, &q3);
+User\task.c(110): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			updateAngleTmp(&q0, &q1, &q2, &q3);
+User\task.c(110): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			updateAngleTmp(&q0, &q1, &q2, &q3);
+User\task.c(110): warning:  #167-D: argument of type "volatile float *" is incompatible with parameter of type "float *"
+  			updateAngleTmp(&q0, &q1, &q2, &q3);
+User\task.c(375): warning:  #1-D: last line of file ends without a newline
+  			//Serial_Printf("\r\n");
+User\task.c: 9 warnings, 0 errors
 linking...
-Program Size: Code=34756 RO-data=1856 RW-data=308 ZI-data=27596  
-".\Objects\F401_ZS.axf" - 0 Error(s), 0 Warning(s).
+Program Size: Code=35268 RO-data=1856 RW-data=312 ZI-data=27608  
+".\Objects\F401_ZS.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -54,10 +74,10 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: Keil::Device:Startup:2.6.3
-      Source file:   MDK\Device\Source\ARM\STM32F401xx_OPT.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f401xe.s
       Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   MDK\Device\Source\ARM\STM32F401xx_OPT.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
 
    * Component: ARM::CMSIS:CORE:5.0.1

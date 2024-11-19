@@ -57,3 +57,4 @@
 .\objects\pwm.o: D:\tools\IDE\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
 .\objects\pwm.o: D:\tools\IDE\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\pwm.o: .\software\PoseCalculate.h
+.\objects\pwm.o: .\software\PID.h

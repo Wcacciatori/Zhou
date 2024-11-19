@@ -9,7 +9,8 @@ void MyIIC_W_SCL(uint8_t BitValue)
 	//GPIO_WriteBit(GPIOA, GPIO_Pin_11, (BitAction)BitValue);
 	//zhou！
 	GPIO_WriteBit(GPIOC, GPIO_Pin_10, (BitAction)BitValue);
-	Delay_us(10);
+	//for(int i=0;i<10;i++);
+	delay_us(10);
 }
 void MyIIC_W_SDA(uint8_t BitValue)
 {
@@ -17,7 +18,8 @@ void MyIIC_W_SDA(uint8_t BitValue)
 	//GPIO_WriteBit(GPIOA, GPIO_Pin_12, (BitAction)BitValue);
 	//zhou！
 	GPIO_WriteBit(GPIOC, GPIO_Pin_12, (BitAction)BitValue);
-	Delay_us(10);
+	//for(int i=0;i<10;i++);
+	delay_us(10);
 }
 
 uint8_t MyIIC_R_SDA(void)
@@ -27,8 +29,8 @@ uint8_t MyIIC_R_SDA(void)
 	//BitValue = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_12);
 	//zhou!
 	BitValue = GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_12);
-	
-	Delay_us(10);
+	//for(int i=0;i<10;i++);
+	delay_us(10);
 	return BitValue;
 }
 

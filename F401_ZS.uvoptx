@@ -1610,7 +1610,7 @@
 
   <Group>
     <GroupName>Source</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2065,8 +2065,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\software\GassNewton.c</PathWithFileName>
-      <FilenameWithoutPath>GassNewton.c</FilenameWithoutPath>
+      <PathWithFileName>.\software\PoseCalculate.c</PathWithFileName>
+      <FilenameWithoutPath>PoseCalculate.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2077,8 +2077,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\software\GassNewton.h</PathWithFileName>
-      <FilenameWithoutPath>GassNewton.h</FilenameWithoutPath>
+      <PathWithFileName>.\software\PoseCalculate.h</PathWithFileName>
+      <FilenameWithoutPath>PoseCalculate.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2089,20 +2089,32 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\software\PoseCalculate.c</PathWithFileName>
-      <FilenameWithoutPath>PoseCalculate.c</FilenameWithoutPath>
+      <PathWithFileName>.\software\gaussnewton.c</PathWithFileName>
+      <FilenameWithoutPath>gaussnewton.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
       <FileNumber>151</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\software\PID.c</PathWithFileName>
+      <FilenameWithoutPath>PID.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>152</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\software\PoseCalculate.h</PathWithFileName>
-      <FilenameWithoutPath>PoseCalculate.h</FilenameWithoutPath>
+      <PathWithFileName>.\software\PID.h</PathWithFileName>
+      <FilenameWithoutPath>PID.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -1330,16 +1330,6 @@
           <GroupName>software</GroupName>
           <Files>
             <File>
-              <FileName>GassNewton.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\software\GassNewton.c</FilePath>
-            </File>
-            <File>
-              <FileName>GassNewton.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\software\GassNewton.h</FilePath>
-            </File>
-            <File>
               <FileName>PoseCalculate.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\software\PoseCalculate.c</FilePath>
@@ -1348,6 +1338,21 @@
               <FileName>PoseCalculate.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\software\PoseCalculate.h</FilePath>
+            </File>
+            <File>
+              <FileName>gaussnewton.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\software\gaussnewton.c</FilePath>
+            </File>
+            <File>
+              <FileName>PID.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\software\PID.c</FilePath>
+            </File>
+            <File>
+              <FileName>PID.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\software\PID.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -45,7 +45,7 @@ void computeResiduals(double V[M][3],double e[M],double P[6]){
 }
 //P[Kx,Ky,Kz,Bx,By,Bz]
 //
-double computeJacobian(double A[M][3],double J[M][M],double P[M]){	
+void computeJacobian(double A[M][3],double J[M][M],double P[M]){	
 	for(int i=0;i<M;i++){
             J[i][0]= 2*P[0]*(V[i][0]-P[3])*(V[i][0]-P[3]);
             J[i][1]= 2*P[1]*(V[i][1]-P[4])*(V[i][1]-P[4]);

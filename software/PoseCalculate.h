@@ -7,6 +7,12 @@ typedef struct w{
 
 }gyro;
 
+typedef struct z{
+		float x;
+		float y;
+		float z;
+
+}mag;
 
 typedef struct y{
 		float x;

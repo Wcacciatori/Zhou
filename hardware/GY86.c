@@ -48,12 +48,14 @@ uint8_t MPU_ReadReg(uint8_t RegAddress){
 
 void MPU6050_Init(void){
 	MyIIC_Init();
+	//todo：加速度计频率要和任务   就是这里！！频率！！
+	//todo：加速度计矫正还没改
 	MPU_WriteReg(MPU6050_PWR_MGMT_1, 0x01);
 	MPU_WriteReg(MPU6050_PWR_MGMT_2, 0x00);
-	MPU_WriteReg(MPU6050_SMPLRT_DIV, 0x07);
-	MPU_WriteReg(MPU6050_CONFIG, 0x06);
+	MPU_WriteReg(MPU6050_SMPLRT_DIV, 0x07);//采样率除的分频系数
+	MPU_WriteReg(MPU6050_CONFIG, 0x06);//低通滤波器 保留明显好转
 	MPU_WriteReg(MPU6050_GYRO_CONFIG, 0x18);
-	MPU_WriteReg(MPU6050_ACCEL_CONFIG, 0x01);
+	MPU_WriteReg(MPU6050_ACCEL_CONFIG, 0x04);// 6=三周均自检	，高通滤波4=0.63Hz 
 	MPU_WriteReg(MPU6050_INT_PIN_CFG , 0x02);
 	MPU_WriteReg(MPU6050_USER_CTRL , 0x00);
 	
@@ -124,7 +126,7 @@ uint8_t HMC_ReadReg(uint8_t RegAddress)
 	MyIIC_SendByte(HMC_Address | 0x01);
 	MyIIC_ReceiveAck();
 	Data = MyIIC_ReceiveByte();
-	MyIIC_SendAck(0);
+	MyIIC_SendAck(1);
 	MyIIC_Stop();
 	return Data;
 }
@@ -132,8 +134,9 @@ uint8_t HMC_ReadReg(uint8_t RegAddress)
 
 void HMC_Init(void)
 {
-	HMC_WriteReg(HMC_CR_A, 0x70);
-	HMC_WriteReg(HMC_CR_B, 0x20);
+	//成都磁场强度：0.51297高斯。倾角48.31。 磁偏角为-2.40方向朝西
+	HMC_WriteReg(HMC_CR_A, 0x78);//采样平均数=8,数据输出速率=7(不使用)
+	HMC_WriteReg(HMC_CR_B, 0x20);//增益=1090counts/Gauss
 	HMC_WriteReg(HMC_MODE, 0x00);
 	
 }

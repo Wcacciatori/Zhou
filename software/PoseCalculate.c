@@ -7,8 +7,8 @@
 	3.四元数归一化？：为了保证微分方程正确解（其中将n*n看作-1）
 	else
 */
-#define beta 1.0f
-#define deltT 0.01f
+#define beta 0.28f     //越小越接近陀螺仪，即越稳定但是漂移同时越严重
+#define deltT 0.028f  //越小越不晃，但是角度变化量跟不上，越大反应越快
 
 volatile float q0,q1,q2,q3;//初始值可设为1,0,0,0
 float q0Acc,q1Acc,q2Acc,q3Acc;//初始值可设为1,0,0,0
@@ -16,7 +16,8 @@ float q0gyro,q1gyro,q2gyro,q3gyro;//初始值可设为1,0,0,0
 double yaw,pitch,roll;
 
 gyro gyroData;//test
-acc accData;//test
+volatile acc accData;//test
+mag magData;//test
 
 float invSqrt(float x);
 void qAccCompute(float *q0Acc,float *q1Acc,float *q2Acc,float *q3Acc);
