@@ -9,6 +9,8 @@ typedef struct PID{
 	float lastErr_out;
 	float L_lastErr_out;
 	
+	float expW;
+	
 	float P_in;
 	float I_in;
 	float D_in;
@@ -16,8 +18,17 @@ typedef struct PID{
 	float Err_in;
 	float lastErr_in;
 	float L_lastErr_in;
+	
+	float U;
 }PIDController;
 
-void initializePIDControllers(void);
+typedef struct ExpAngle{
+	float roll;
+	float pitch;
+	float yaw;
 
+}ExpAngle;
+
+void initializePIDControllers(void);
+float PID_Contral(void);
 #endif

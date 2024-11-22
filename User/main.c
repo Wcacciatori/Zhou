@@ -3,7 +3,8 @@
 
 
 extern int16_t  AX, AY, AZ, GX, GY, GZ, MX, MZ, MY;
-
+extern uint16_t pwm_IN[4];
+extern uint16_t pwm_OUT[4];
 extern volatile float q0,q1,q2,q3;
 extern float q0Acc,q1Acc,q2Acc,q3Acc;//初始值可设为1,0,0,0
 extern float q0gyro,q1gyro,q2gyro,q3gyro;//初始值可设为1,0,0,0
@@ -11,9 +12,26 @@ OS_ERR errr;
 float tmp2;
 void SysTick_Init(void){
 	//OS_CPU_SysTickInitFreq(84000000);
+	
+	//配置时钟源用于驱动系统时钟
+	RCC_PLLConfig(RCC_PLLSource_HSI, 8, 168, 4, 4);
+	//配置AHB APB分频系数
+	RCC_HCLKConfig(RCC_SYSCLK_Div1);
+	RCC_PCLK1Config(RCC_HCLK_Div2);
+	RCC_PCLK2Config(RCC_HCLK_Div1);
+	RCC_PLLCmd(ENABLE);
+	
+	//设置flash
+	FLASH->ACR |= FLASH_ACR_PRFTEN;
+	FLASH->ACR |= FLASH_ACR_LATENCY_2WS;
+	
+	//使能系统时钟
+	while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY)!=SET);
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+	
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
-	SysTick_Config(RCC_Clocks.SYSCLK_Frequency/OS_TICKS_PER_SEC);
+	SysTick_Config(RCC_Clocks.SYSCLK_Frequency/OS_TICKS_PER_SEC);//para_In=两个中断之间的滴答数
 }
 
 
@@ -21,31 +39,32 @@ void SysTick_Init(void){
 
 int main(void)
 {
-		SysTick_Init();
-		DELAY_Init(84);
 		
+		DELAY_Init(84);
+		SysTick_Init();
 		Serial_Init();
 		Receicer_Init();
 		GY86_Init();
 		Motor_Init();
 		Serial_Printf("ok");
 //	while(1){
-//		MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
-//		tmp2 = AX/16384.0;
-//		Serial_Printf("ax:%f\r\n", tmp2);
+////		MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
+////		tmp2 = AX/16384.0;
+//		ANODT_Send20(pwm_OUT[0], pwm_OUT[1], pwm_OUT[2], pwm_OUT[3]);
 //	}
+	
 		//OS_CPU_SysTickInitFreq(84000000);
 		OSInit();
 		//OSTaskCreate((void *)Task_USART_test, (void *)0, &USART_test[99], 9);
 		q0=1;q1=0;q2=0;q3=0;
 
-		OSTaskCreateExt((void *)Task_GY86, (void *)0, &GY86[511], 7, 7, &GY86[0], sizeof(GY86), (void *)0, OS_TASK_OPT_SAVE_FP | OS_TASK_OPT_STK_CHK);
+		//OSTaskCreateExt((void *)Task_GY86, (void *)0, &GY86[511], 7, 7, &GY86[0], sizeof(GY86), (void *)0, OS_TASK_OPT_SAVE_FP | OS_TASK_OPT_STK_CHK);
 		//OSTaskCreate((void *)Task_Motor, (void *)0, &Motor[99], 8);
-		//OSTaskCreateExt((void *)Task_BT, (void *)0, &BT[99], 8, 8, &BT[0], sizeof(BT), (void *)0, OS_TASK_OPT_SAVE_FP);
+		OSTaskCreateExt((void *)Task_BT, (void *)0, &BT[511], 8, 8, &BT[0], sizeof(BT), (void *)0, OS_TASK_OPT_SAVE_FP);
 		OSTaskCreateExt((void *)Task_PoseCalcu, (void *)0, &PoseCalcu[511], 6, 6, &PoseCalcu[0], sizeof(PoseCalcu), (void *)0, OS_TASK_OPT_SAVE_FP | OS_TASK_OPT_STK_CHK);
-		OSTaskNameSet(7, (INT8U *)"GY86", &errr);
+		//OSTaskNameSet(7, (INT8U *)"GY86", &errr);
 		//OSTaskNameSet(8, (INT8U *)"Motor", &errr);
-		//OSTaskNameSet(9, (INT8U *)"BT", &errr);
+		OSTaskNameSet(9, (INT8U *)"BT", &errr);
 		OSTaskNameSet(6, (INT8U *)"PoseCalcu", &errr);
 
 		OS_TRACE_INIT();

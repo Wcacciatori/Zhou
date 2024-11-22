@@ -1,6 +1,8 @@
 #include "main.h"
 #include "Delay.h"
 
+#define DEG_TO_RAD (3.14159265358979323846 / 180.0)
+
 #define BYTE0(dwTemp)	(*(char *)(&dwTemp))
 #define BYTE1(dwTemp)	(*((char *)(&dwTemp)+1))
 #define BYTE2(dwTemp)	(*((char *)(&dwTemp)+2))
@@ -9,11 +11,12 @@
 extern volatile float q0,q1,q2,q3;
 extern float q0Acc,q1Acc,q2Acc,q3Acc;//初始值可设为1,0,0,0
 extern float q0gyro,q1gyro,q2gyro,q3gyro;//初始值可设为1,0,0,0
-extern double yaw,pitch,roll;
+extern float yaw,pitch,roll;
 extern gyro gyroData;
 extern volatile acc accData;
 extern mag magData;
 extern uint32_t Duty[4];
+extern uint16_t pwm_OUT[4];
 int16_t  AX, AY, AZ, GX, GY, GZ, MX, MZ, MY;
 float Axf,Ayf,Azf;
 uint16_t pwm_IN[4];
@@ -24,7 +27,7 @@ void ANODT_Send01(int16_t acc_x, int16_t acc_y, int16_t acc_z, int16_t gyro_x, i
 void ANODT_Send02(int16_t mag_x, int16_t mag_y, int16_t mag_z, int32_t ALT_BAR, int16_t TMP, uint8_t BAR_STA, uint8_t MAG_STA);
 void ANODT_Send03(double roll, double pitch, double yaw, uint8_t Fusion_stat);
 void ANODT_Send04(float q0, float q1, float q2, float q3, uint8_t Fusion_stat);
-
+void ANODT_Send20(uint16_t pwm1, uint16_t pwm2, uint16_t pwm3, uint16_t pwm4);
 typedef struct{
 	uint8_t head;
 	uint8_t addr;
@@ -73,6 +76,7 @@ void Task_PoseCalcu(){
 	{
 		
 		MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);//获取mpu6000原始数据
+		HMC_GetData(&MX, &MZ, &MY);
 			//稍加处理
 		OS_ENTER_CRITICAL();
 			tmp = AX/16384.0;
@@ -87,31 +91,32 @@ void Task_PoseCalcu(){
 			GX = (int16_t)(GX/16.384);
 			GY = (int16_t)(GY/16.384);
 			GZ = (int16_t)(GZ/16.384);
+//			accData.x = AX/16384.0f;
+//			accData.y = AY/16384.0f;
+//		  accData.z = AZ/16384.0f;
 		
-			accData.x = Axf/1000;
-			accData.y = Ayf/1000;
-			accData.z = Azf/1000;
+			accData.x = Axf/100;
+			accData.y = Ayf/100;
+			accData.z = Azf/100;
 			gyroData.x = (GX/16.384);
 			gyroData.y = (GY/16.384);
-			gyroData.z = (GZ/16.384+0.0765);//+0.0755可以消除一点偏移
-			//获取磁力计数据
-//			HMC_GetData(&MX, &MZ, &MY);
-//			MX = (int16_t)(MX/1090.0);
-//			MY = (int16_t)(MY/1090.0);
-//			MZ = (int16_t)(MZ/1090.0);
-//			
-//			magData.x = (MX/1090.0);
-//			magData.y = (MY/1090.0);
-//			magData.z = (MZ/1090.0);
-//			
+			gyroData.z = (GZ/16.384);//+0.0555可以消除一点偏移
 			
-//		
-			madgwick(&q0, &q1, &q2, &q3);
-			updateAngleTmp(&q0, &q1, &q2, &q3);
-//		//发送到上位机
-			ANODT_Send01(AX,AY,AZ,GX,GY,GZ,0);
-			ANODT_Send03(roll*100, pitch*100, yaw*100, 1);
-			ANODT_Send04(q0,q1,q2,q3,1);
+			//获取磁力计数据			
+			MX = (int16_t)(MX/1090.0*100);
+			MY = (int16_t)(MY/1090.0*100);
+			MZ = (int16_t)(MZ/1090.0*100);
+			
+			magData.x = (MX/1090.0);
+			magData.y = (MY/1090.0);
+			magData.z = (MZ/1090.0);
+			
+			MadgwickAHRSupdate(gyroData.x, gyroData.y, gyroData.z, accData.x, accData.y, accData.z, magData.x, magData.y, magData.z);
+			AttitudeSolver_GetEulerAngles(&roll, &pitch, &yaw);
+			PID_Contral();
+			//madgwick(&q0, &q1, &q2, &q3);
+			//updateAngleTmp(&q0, &q1, &q2, &q3);
+			
 			OS_EXIT_CRITICAL();
 			OSTimeDly(1);//1000HZ
 	}
@@ -159,17 +164,17 @@ void Task_GY86()
 //			gyroData.z = (GZ/16.384);//+0.0555可以消除一点偏移
 			//获取磁力计数据
 			
-			OS_ENTER_CRITICAL();
-			HMC_GetData(&MX, &MZ, &MY);
-			MX = (int16_t)(MX/1090.0*100);
-			MY = (int16_t)(MY/1090.0*100);
-			MZ = (int16_t)(MZ/1090.0*100);
+//			OS_ENTER_CRITICAL();
+//			HMC_GetData(&MX, &MZ, &MY);
+//			MX = (int16_t)(MX/1090.0*100);
+//			MY = (int16_t)(MY/1090.0*100);
+//			MZ = (int16_t)(MZ/1090.0*100);
+//			
+//			magData.x = (MX/1090.0);
+//			magData.y = (MY/1090.0);
+//			magData.z = (MZ/1090.0);
 			
-			magData.x = (MX/1090.0);
-			magData.y = (MY/1090.0);
-			magData.z = (MZ/1090.0);
-			ANODT_Send02(MX,MY,MZ,0,0,0,1);
-			OS_EXIT_CRITICAL();
+//			OS_EXIT_CRITICAL();
 			OSTimeDly(10);//500HZ
 	}
 }
@@ -177,13 +182,12 @@ void Task_GY86()
 void Task_BT(){
 	while(1){
 	OS_ENTER_CRITICAL();	
-//		Serial_Printf("ch1 = %d\r\r\r\r\r\r\r\r\r\r\r\r\r", pwm_IN[0]);//1 右 左右
-//		Serial_Printf("ch2 = %d\r\r\r\r\r\r\r\r\r\r\r\r\r", pwm_IN[1]);//2 右 上下
-//		Serial_Printf("ch3 = %d\r\r\r\r\r\r\r\r\r\r\r\r\r", pwm_IN[2]);//3 左 上下
-//		Serial_Printf("ch4 = %d\r\r\r\r\r\r\r\r\r\r\r\r\r", pwm_IN[3]);//4 左 左右
-//		Serial_Printf();
-
-
+			//发送到上位机
+//			ANODT_Send01(AX,AY,AZ,GX,GY,GZ,0);
+//			ANODT_Send02(MX,MY,MZ,0,0,0,1);
+//			ANODT_Send03(roll, pitch, yaw, 1);
+//			ANODT_Send04(q0,q1,q2,q3,1);
+//			ANODT_Send20(pwm_IN[0], pwm_IN[1], pwm_IN[2], pwm_IN[3]);
 	OS_EXIT_CRITICAL();
 	OSTimeDly(5);//200hz
 }
@@ -332,7 +336,36 @@ void ANODT_Send04(float q0, float q1, float q2, float q3, uint8_t Fusion_stat){
 	Serial_SendArray(Sensor_data_buf,15);
 	
 }
+void ANODT_Send20(uint16_t pwm1, uint16_t pwm2, uint16_t pwm3, uint16_t pwm4){
+	uint8_t cnt=0;
 
+	Sensor_data_buf[cnt++] = 0xAA;
+	Sensor_data_buf[cnt++] = 0xFF;
+	Sensor_data_buf[cnt++] = 0x20;
+	Sensor_data_buf[cnt++] = 8;
+	Sensor_data_buf[cnt++] = BYTE0(pwm1);
+	Sensor_data_buf[cnt++] = BYTE1(pwm1);
+	Sensor_data_buf[cnt++] = BYTE0(pwm2);
+	Sensor_data_buf[cnt++] = BYTE1(pwm2);
+	Sensor_data_buf[cnt++] = BYTE0(pwm3);
+	Sensor_data_buf[cnt++] = BYTE1(pwm3);
+	Sensor_data_buf[cnt++] = BYTE0(pwm4);
+	Sensor_data_buf[cnt++] = BYTE1(pwm4);
+	
+	uint8_t sumcheck=0,addcheck=0;
+	
+	for(uint8_t i=0; i < (Sensor_data_buf[3]+4); i++)
+	{
+	sumcheck += Sensor_data_buf[i]; 
+	addcheck += sumcheck; 
+	}
+	
+	Sensor_data_buf[cnt++] = sumcheck;
+	Sensor_data_buf[cnt++] = addcheck;
+	
+	Serial_SendArray(Sensor_data_buf,14);
+	
+}
 
 //失败（错误）的样例
 void Task_USART_RECEIVE(){
