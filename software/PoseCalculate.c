@@ -33,9 +33,7 @@ void qAccCompute(float *q0Acc,float *q1Acc,float *q2Acc,float *q3Acc);
 void updateQuaternion(float *q0gyro,float *q1gyro,float *q2gyro,float *q3gyro);
 //每次更新前需要做归一乎？或者更新后第一时间做归一也可以！
 
-
-
-//
+//四元数转欧拉角
 void AttitudeSolver_GetEulerAngles(float *roll, float *pitch, float *yaw) {
     *roll = atan2f(2.0f * (q0 * q1 + q2 * q3), 1.0f - 2.0f * (q1 * q1 + q2 * q2)) * 57.2958f;  // ?????
     *pitch = asinf(2.0f * (q0 * q2 - q3 * q1)) * 57.2958f;
