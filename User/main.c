@@ -57,7 +57,7 @@ int main(void)
 		OSInit();
 		//OSTaskCreate((void *)Task_USART_test, (void *)0, &USART_test[99], 9);
 		q0=1;q1=0;q2=0;q3=0;
-
+		initializePIDControllers();
 		//OSTaskCreateExt((void *)Task_GY86, (void *)0, &GY86[511], 7, 7, &GY86[0], sizeof(GY86), (void *)0, OS_TASK_OPT_SAVE_FP | OS_TASK_OPT_STK_CHK);
 		//OSTaskCreate((void *)Task_Motor, (void *)0, &Motor[99], 8);
 		OSTaskCreateExt((void *)Task_BT, (void *)0, &BT[511], 8, 8, &BT[0], sizeof(BT), (void *)0, OS_TASK_OPT_SAVE_FP);

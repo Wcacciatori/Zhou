@@ -183,11 +183,12 @@ void Task_BT(){
 	while(1){
 	OS_ENTER_CRITICAL();	
 			//发送到上位机
-//			ANODT_Send01(AX,AY,AZ,GX,GY,GZ,0);
-//			ANODT_Send02(MX,MY,MZ,0,0,0,1);
-//			ANODT_Send03(roll, pitch, yaw, 1);
-//			ANODT_Send04(q0,q1,q2,q3,1);
-//			ANODT_Send20(pwm_IN[0], pwm_IN[1], pwm_IN[2], pwm_IN[3]);
+			ANODT_Send01(AX,AY,AZ,GX,GY,GZ,0);
+			ANODT_Send02(MX,MY,MZ,0,0,0,1);
+			ANODT_Send03(roll, pitch, yaw, 1);
+			ANODT_Send04(q0,q1,q2,q3,1);
+			ANODT_Send20(pwm_OUT[0], pwm_OUT[1], pwm_OUT[2], pwm_OUT[3]);
+			//ANODT_Send20(pwm_IN[0], pwm_IN[1], pwm_IN[2], pwm_IN[3]);
 	OS_EXIT_CRITICAL();
 	OSTimeDly(5);//200hz
 }

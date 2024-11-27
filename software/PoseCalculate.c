@@ -12,7 +12,7 @@
 #define PI 3.14159265358979323846
 
 #define sampleFreq	150.0f		// sample frequency in Hz
-#define betaDef		0.4f		// 2 * proportional gain
+#define betaDef		0.8f		// 2 * proportional gain
 
 //---------------------------------------------------------------------------------------------------
 // Variable definitions
