@@ -239,19 +239,10 @@ void ExpAngleByReceiver(uint16_t pwm_IN[4]){
 		偏航-右左右
 		俯仰-左上下
 		横滚-左左右
-		
 	*/
 	pitch_Exp = PitchMap_value(pwm_IN[1])/100;
 	roll_Exp = RollMap_value(pwm_IN[0])/100;
 	w_yaw_Exp = YawMap_value(pwm_IN[3])/100;
-//	Serial_Printf("roll_Exp:%f\r\n ", roll_Exp);
-//	Serial_Printf("w_yaw_Exp:%f\r\n", w_yaw_Exp);
-//	Serial_Printf("pitch_Exp:%f\r\n ", pitch_Exp);
-//	Serial_Printf("\r\n");
-//	delay_ms(1000);	
-//	
-	
-	
 	
 }
 /*
@@ -266,11 +257,6 @@ float PID_Contral(){
 	
 	//期望值还没计算,需要通过receiver来计算,done
 	ExpAngleByReceiver(pwm_IN);
-//	Serial_Printf("roll_Exp:%f\r\n ", roll_Exp);
-//	Serial_Printf("w_yaw_Exp:%f\r\n", w_yaw_Exp);
-//	Serial_Printf("pitch_Exp:%f\r\n ", pitch_Exp);
-//	Serial_Printf("\r\n");
-//	delay_ms(1000);
 
 	acc = AccMap_value(pwm_IN[2]);
 	RollPID_Contral(roll_Exp, roll, gyroData.x, &RollController);
