@@ -47,11 +47,20 @@ int main(void)
 		GY86_Init();
 		Motor_Init();
 		Serial_Printf("ok");
-//	while(1){
-////		MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
-////		tmp2 = AX/16384.0;
-//		ANODT_Send20(pwm_OUT[0], pwm_OUT[1], pwm_OUT[2], pwm_OUT[3]);
-//	}
+	
+		//重新设定电机
+//		PWM_SetDuty1(200);
+//		PWM_SetDuty2(200);
+//		PWM_SetDuty3(200);
+//		PWM_SetDuty4(200);
+//		delay_ms(3000);
+//		
+//		PWM_SetDuty1(100);
+//		PWM_SetDuty2(100);
+//		PWM_SetDuty3(100);
+//		PWM_SetDuty4(100);
+//	
+	
 	
 		//OS_CPU_SysTickInitFreq(84000000);
 		OSInit();
@@ -76,10 +85,6 @@ int main(void)
 
 
 
-
-	
-	
-	
 	
 	
 //	OLED_Init();
@@ -88,7 +93,8 @@ int main(void)
 //	PWM_Init();
 //	Receicer_Init();
 
-	//重新设定电机
+//	//重新设定电机
+//		TIM_SetCompare1(TIM3, 100);
 //		PWM_SetDuty1(10);
 //		PWM_SetDuty2(10);
 //		PWM_SetDuty3(10);

@@ -100,20 +100,20 @@ void PWM_Init(void)
 */
 void PWM_SetDuty1(float Compare)
 {
-	TIM_SetCompare1(TIM3, Compare*20);
+	TIM_SetCompare1(TIM3, Compare);
 }
 
 void PWM_SetDuty2(float Compare)
 {
-	TIM_SetCompare2(TIM3, Compare*20);
+	TIM_SetCompare2(TIM3, Compare);
 }
 
 void PWM_SetDuty3(float Compare)
 {
-	TIM_SetCompare3(TIM3, Compare*20);
+	TIM_SetCompare3(TIM3, Compare);
 }
 
 void PWM_SetDuty4(float Compare)
 {
-	TIM_SetCompare4(TIM3, Compare*20);
+	TIM_SetCompare4(TIM3, Compare);
 }

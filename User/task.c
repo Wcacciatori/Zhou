@@ -71,6 +71,7 @@ void Task_USART_test(){
 	}
 }
 
+//×ËÌ¬½âËã
 void Task_PoseCalcu(){
 	while(1)
 	{
@@ -114,6 +115,22 @@ void Task_PoseCalcu(){
 			MadgwickAHRSupdate(gyroData.x, gyroData.y, gyroData.z, accData.x, accData.y, accData.z, magData.x, magData.y, magData.z);
 			AttitudeSolver_GetEulerAngles(&roll, &pitch, &yaw);
 			PID_Contral();
+			
+			if(pwm_OUT[0]<2000&&pwm_OUT[1]<2000&&pwm_OUT[2]<2000&&pwm_OUT[3]<2000){
+				PWM_SetDuty3(pwm_OUT[0]/100);
+				PWM_SetDuty2(pwm_OUT[1]/100);
+				PWM_SetDuty1(pwm_OUT[2]/100);
+				PWM_SetDuty4(pwm_OUT[3]/100);				
+			}else{
+			  PWM_SetDuty3(0);
+			  PWM_SetDuty2(0);
+			  PWM_SetDuty1(0);
+			  PWM_SetDuty4(0);
+			}
+	
+			
+			 
+			
 			//madgwick(&q0, &q1, &q2, &q3);
 			//updateAngleTmp(&q0, &q1, &q2, &q3);
 			

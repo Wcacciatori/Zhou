@@ -20,7 +20,7 @@
 volatile float beta = betaDef;								// 2 * proportional gain (Kp)
 volatile float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;	// quaternion of sensor frame relative to auxiliary frame
 
-float yaw,pitch,roll;
+volatile float yaw,pitch,roll;
 
 float rollOffset = -0.013094f, pitchOffset = -7.447712f;
 

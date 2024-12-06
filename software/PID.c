@@ -11,16 +11,16 @@
 	11.20 roll pitch 接收机信号转为期望角度done
 				todo：yaw pid控制器需要重新考虑，好像不用串级，单级就行了,DONE
 				TODO:检测pwmout按理来说应该输出越来越多才对
-
+	11.28 问题：遥控器关闭时依然旋转。油门输入输出异常：摇杆在中间时电机不转，摇杆在两边时转的猛烈
 */
 extern gyro gyroData;
-extern float yaw,pitch,roll;
+extern volatile float yaw,pitch,roll;
 float w_yaw_Exp,pitch_Exp,roll_Exp;
 extern uint16_t pwm_IN[4];
 PIDController YawController;
 PIDController PitchController;
 PIDController RollController;
-uint16_t pwm_OUT[4];
+uint16_t pwm_OUT[4]={0};
 ExpAngle exp_angle;
 uint16_t Speed;//限幅后的油门
 //赋初值
@@ -47,9 +47,9 @@ void initializePIDControllers() {
 		PitchController.expW = 0.0f;
 		PitchController.U = 0.0f;
 	
-    RollController.P_out = 8.0f;
-    RollController.I_out = 0.1f;
-    RollController.D_out = 0.01f;
+    RollController.P_out = 18.0f;
+    RollController.I_out = 0.0f;
+    RollController.D_out = 0.0f;
     RollController.deltU_out = 0.0f;
     RollController.Err_out = 0.0f;
     RollController.lastErr_out = 0.00f;
@@ -75,8 +75,8 @@ void initializePIDControllers() {
 		PitchController.L_lastErr_in = 0.00f;
 
     RollController.P_in = 1.0f;
-    RollController.I_in = 0.1f;
-    RollController.D_in = 0.01f;
+    RollController.I_in = 0.0f;
+    RollController.D_in = 0.00f;
     RollController.deltU_in = 0.0f;
     RollController.Err_in = 0.0f;
     RollController.lastErr_in = 0.00f;
@@ -106,10 +106,10 @@ float RollPID_Contral(float exp_Roll, float now_Roll, float now_wRoll, PIDContro
 	
 	RollController->L_lastErr_out = RollController->lastErr_out;
 	RollController->lastErr_out = RollController->Err_out;
-	RollController->Err_out = exp_Roll - now_wRoll;
+	RollController->Err_out = exp_Roll - now_Roll;
 	RollController->deltU_out = A*RollController->Err_out+B*RollController->lastErr_out+C*RollController->L_lastErr_out;
 	
-	RollController->expW = limit(RollController->expW += RollController->deltU_out, 500, -500);
+	RollController->expW = limit(RollController->expW += RollController->deltU_out, 5000, -5000);
 	
 	D = RollController->P_in+RollController->I_in+RollController->D_in;
 	E = -RollController->P_in-2*RollController->D_in;
@@ -132,10 +132,10 @@ float PitchPID_Contral(float exp_Pitch, float now_Pitch, float now_wPitch, PIDCo
 	
 	PitchController->L_lastErr_out = PitchController->lastErr_out;
 	PitchController->lastErr_out = PitchController->Err_out;
-	PitchController->Err_out = exp_Pitch - now_wPitch;
+	PitchController->Err_out = exp_Pitch - now_Pitch;
 	PitchController->deltU_out = A*PitchController->Err_out+B*PitchController->lastErr_out+C*PitchController->L_lastErr_out;
 	
-	PitchController->expW = limit(PitchController->expW += PitchController->deltU_out, 500, -500);
+	PitchController->expW = limit(PitchController->expW += PitchController->deltU_out, 1000, -1000);
 	
 	D = PitchController->P_in+PitchController->I_in+PitchController->D_in;
 	E = -PitchController->P_in-2*PitchController->D_in;
@@ -159,6 +159,8 @@ float YawPID_Contral(float exp_wYaw, float now_Yaw, float now_wYaw, PIDControlle
 	E = -YawController->P_in-2*YawController->D_in;
 	F = YawController->D_in;
 	
+	
+	
 	YawController->L_lastErr_in = YawController->lastErr_in;
 	YawController->lastErr_in = YawController->Err_in;
 	YawController->Err_in = YawController->expW - now_wYaw;
@@ -179,10 +181,13 @@ float YawPID_Contral(float exp_wYaw, float now_Yaw, float now_wYaw, PIDControlle
   *
   ********************************************************/
 int16_t AccMap_value(uint16_t input) {
-    if (input >= 400 && input <= 1100) {
+    if (input >= 400 && input <= 920) {
         // 950 ~ 485 到 0 ~ 2000
-        return -((input - 485) * 2000 / (950 - 485)) + 2000;
-
+			
+			if(-((input - 485) * 2000 / (920 - 485)) + 2000 > 0){
+				return -((input - 485) * 2000 / (950 - 485)) + 2000;
+			}else return 0;	
+        
     } else {
         return 0; 
     }
@@ -193,23 +198,23 @@ int16_t AccMap_value(uint16_t input) {
 //Yaw角的映射: pwm->angleW, yaw映射到的范围还需要考虑? yaw直接搞成角速度就行了
 float YawMap_value(uint16_t input) {
     if (input >= 900 && input <= 1130) {
-        // 940 ~ 1130 到 -1500 ~ 0
-        return ((input - 940) * (1500) / (1130 - 940)) - 1500;
-    } else if (input > 1150 && input <= 1445) {
-        // 1150 ~ 1345 到 0 ~ 1500
-        return ((input - 1150) * 1500 / (1345 - 1150));
+        // 750 ~ 1140 到 -1500 ~ 0
+        return ((input - 750) * (1500) / (1140 - 750)) - 1500;
+    } else if (input > 1160 && input <= 1580) {
+        // 1160 ~ 1580 到 0 ~ 1500
+        return ((input - 1160) * 1500 / (1580 - 1160));
     } else {
         return 0; 
     }
 }
 //Roll角的映射: pwm->angle
 float RollMap_value(uint16_t input) {
-    if (input >= 1180 && input <= 1480) {
-        // 1380 ~ 1180 到 -1500 ~ 0
-        return ((input - 1380) * (1500) / (1180 - 1380)) - 1500;
-    } else if (input >= 905 && input <= 1160) {
-        // 1160 ~ 965 到 0 ~ 1500
-        return ((input - 1160) * 1500 / (965 - 1160));
+    if (input >= 1180 && input <= 1600) {
+        // 1600 ~ 1180 到 -1500 ~ 0
+        return ((input - 1180) * (1500) / (1180 - 1600));
+    } else if (input >= 750 && input <= 1160) {
+        // 1160 ~ 750 到 0 ~ 1500
+        return ((input - 1160) * 1500 / (750 - 1160));
     } else {
         return 0; 
     }
@@ -218,11 +223,11 @@ float RollMap_value(uint16_t input) {
 //Pitch角的映射: pwm->angle
 float PitchMap_value(uint16_t input) {
     if (input >= 850 && input <= 1140) {
-        // 950 ~ 1140 到 -1500 ~ 0
-        return ((input - 950) * (1500) / (1140 - 950)) - 1500;
-    } else if (input >= 1170 && input <= 1460) {
-        // 1170 ~ 1360 到 0 ~ 1500
-        return ((input - 1170) * 1500 / (1360 - 1170));
+        // 750 ~ 1160 到 -1500 ~ 0
+        return ((input - 750) * (1500) / (1160 - 750)) - 1500;
+    } else if (input >= 1180 && input <= 1580) {
+        // 1180 ~ 1580 到 0 ~ 1500
+        return ((input - 1180) * 1500 / (1580 - 1180));
     } else {
         return 0; 
     }
@@ -241,7 +246,7 @@ void ExpAngleByReceiver(uint16_t pwm_IN[4]){
 		横滚-左左右	
 	*/
 	pitch_Exp = PitchMap_value(pwm_IN[1])/100;
-	roll_Exp = RollMap_value(pwm_IN[0])/100;
+	roll_Exp 	= RollMap_value(pwm_IN[0])/100;
 	w_yaw_Exp = YawMap_value(pwm_IN[3])/100;
 
 }
@@ -263,7 +268,7 @@ float PID_Contral(){
 	PitchPID_Contral(pitch_Exp, pitch, gyroData.y, &PitchController);
 	YawPID_Contral(w_yaw_Exp, yaw, gyroData.z, &YawController);
 		
-	RollController.U 	= limit(RollController.U 	+= RollController.deltU_in, 500, -500);
+	RollController.U 	= limit(RollController.U 	+= RollController.deltU_in, 5000, -5000);
 	PitchController.U = limit(PitchController.U += PitchController.deltU_in, 500, -500);
 	YawController.U   = limit(YawController.U 	+= YawController.deltU_in, 500, -500);
 	
@@ -275,7 +280,7 @@ float PID_Contral(){
 //		Serial_Printf("\r\n");
 //		delay_ms(100);
 
-	if(acc>500){
+	if(acc>300){
 		pwm_OUT[0] = acc +  RollController.U;
 		pwm_OUT[1] = acc +  RollController.U;
 		pwm_OUT[2] = acc -  RollController.U;
