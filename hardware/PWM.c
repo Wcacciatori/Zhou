@@ -67,7 +67,7 @@ void PWM_Init(void)
 	TIM_TimeBaseInitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;;;
 	TIM_TimeBaseInitStruct.TIM_Period = 2000 - 1;//ARR F=50hz
-	TIM_TimeBaseInitStruct.TIM_Prescaler = 160 - 1;//PSC	得周期为20ms  84/160 = 
+	TIM_TimeBaseInitStruct.TIM_Prescaler = 640 - 1;//PSC	得周期为20ms  84/160 = 
 	TIM_TimeBaseInitStruct.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInitStruct);
 

@@ -48,7 +48,7 @@ int main(void)
 		Motor_Init();
 		Serial_Printf("ok");
 	
-		//重新设定电机
+//		//重新设定电机
 //		PWM_SetDuty1(200);
 //		PWM_SetDuty2(200);
 //		PWM_SetDuty3(200);
@@ -68,7 +68,7 @@ int main(void)
 		q0=1;q1=0;q2=0;q3=0;
 		initializePIDControllers();
 		//OSTaskCreateExt((void *)Task_GY86, (void *)0, &GY86[511], 7, 7, &GY86[0], sizeof(GY86), (void *)0, OS_TASK_OPT_SAVE_FP | OS_TASK_OPT_STK_CHK);
-		//OSTaskCreate((void *)Task_Motor, (void *)0, &Motor[99], 8);
+		OSTaskCreate((void *)Task_PID, (void *)0, &PID[511], 7);
 		OSTaskCreateExt((void *)Task_BT, (void *)0, &BT[511], 8, 8, &BT[0], sizeof(BT), (void *)0, OS_TASK_OPT_SAVE_FP);
 		OSTaskCreateExt((void *)Task_PoseCalcu, (void *)0, &PoseCalcu[511], 6, 6, &PoseCalcu[0], sizeof(PoseCalcu), (void *)0, OS_TASK_OPT_SAVE_FP | OS_TASK_OPT_STK_CHK);
 		//OSTaskNameSet(7, (INT8U *)"GY86", &errr);

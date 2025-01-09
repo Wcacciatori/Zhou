@@ -1,5 +1,5 @@
 #include "main.h"
-
+#include <math.h> 
 /*
 步骤：
 	1.解析接收机数据，把四个通道的数据转化为期望的角度和油门大小
@@ -13,18 +13,24 @@
 				TODO:检测pwmout按理来说应该输出越来越多才对
 	11.28 问题：遥控器关闭时依然旋转。油门输入输出异常：摇杆在中间时电机不转，摇杆在两边时转的猛烈
 */
+
+#define dT 0.01
+#define pid_version 1
+
 extern gyro gyroData;
 extern volatile float yaw,pitch,roll;
 float w_yaw_Exp,pitch_Exp,roll_Exp;
 extern uint16_t pwm_IN[4];
-PIDController YawController;
-PIDController PitchController;
-PIDController RollController;
+
 uint16_t pwm_OUT[4]={0};
 ExpAngle exp_angle;
 uint16_t Speed;//限幅后的油门
 //赋初值
 
+#if  pid_version == 0
+PIDController YawController;
+PIDController PitchController;
+PIDController RollController;
 void initializePIDControllers() {
     // PID控制器初始化_out
     YawController.P_out = 1.0f;
@@ -47,7 +53,7 @@ void initializePIDControllers() {
 		PitchController.expW = 0.0f;
 		PitchController.U = 0.0f;
 	
-    RollController.P_out = 18.0f;
+    RollController.P_out = 5.0f;
     RollController.I_out = 0.0f;
     RollController.D_out = 0.0f;
     RollController.deltU_out = 0.0f;
@@ -83,18 +89,6 @@ void initializePIDControllers() {
 		RollController.L_lastErr_in = 0.00f;
 }
 
-float limit(float data, float max, float min){
-
-	if(data > min && data < max){
-		return data;
-	}else if(data > max){
-		return max;
-	}else{
-		return min;
-	}
-}
-
-
 //控制器串级
 float RollPID_Contral(float exp_Roll, float now_Roll, float now_wRoll, PIDController *RollController){
 	float A,B,C;//外环参数
@@ -109,7 +103,7 @@ float RollPID_Contral(float exp_Roll, float now_Roll, float now_wRoll, PIDContro
 	RollController->Err_out = exp_Roll - now_Roll;
 	RollController->deltU_out = A*RollController->Err_out+B*RollController->lastErr_out+C*RollController->L_lastErr_out;
 	
-	RollController->expW = limit(RollController->expW += RollController->deltU_out, 5000, -5000);
+	RollController->expW = limit(RollController->expW += RollController->deltU_out, 1000, -1000);
 	
 	D = RollController->P_in+RollController->I_in+RollController->D_in;
 	E = -RollController->P_in-2*RollController->D_in;
@@ -121,6 +115,32 @@ float RollPID_Contral(float exp_Roll, float now_Roll, float now_wRoll, PIDContro
 	RollController->deltU_in = D*RollController->Err_in + E*RollController->lastErr_in + F*RollController->L_lastErr_in;
 	
 }
+
+////控制器串级
+//float RollPID_Contral(float exp_Roll, float now_Roll, float now_wRoll, PIDController *RollController){
+//	float A,B,C;//外环参数
+//	float D,E,F;//内环参数
+//	float integral_in,integral_out;
+//	float differential_in, differential_out;
+//	
+//	//计算外环误差
+//	RollController->Err_out = exp_Roll - now_Roll;
+//	
+//	//计算外环积分项
+//	integral_out += RollController->Err_out*dT;
+//	
+//	//计算外环微分项
+//	differential_out = (RollController->Err_out - RollController->lastErr_out)/dT;
+//	
+//	//计算外环输出
+//	RollController->deltU_out = RollController->P_out*RollController->Err_out + RollController->I_out*integral_out + RollController->D_out*differential_out;
+//	
+//	//计算内环误差
+//	RollController->Err_in = RollController->deltU_out - now_wRoll;
+//	
+//	//计算内环积分项
+//	//integral_in +=
+//}
 
 float PitchPID_Contral(float exp_Pitch, float now_Pitch, float now_wPitch, PIDController *PitchController){
 	float A,B,C;//外环参数
@@ -168,6 +188,92 @@ float YawPID_Contral(float exp_wYaw, float now_Yaw, float now_wYaw, PIDControlle
 	
 }
 
+#else
+//新策略
+PIDController_New YawController;
+PIDController_New PitchController_in;
+PIDController_New RollController_in;
+
+PIDController_New PitchController_out;
+PIDController_New RollController_out;
+void initializePIDControllers(){
+	YawController.Kp=0;
+	YawController.Ki=0;
+	YawController.Kd=0;
+	YawController.integral=0;
+	YawController.differential=0;
+	YawController.exp_value=0;
+	YawController.lastErr=0;
+	YawController.U=0;
+	
+	PitchController_out.Kp=0;
+	PitchController_out.Ki=0;
+	PitchController_out.Kd=0;
+	PitchController_out.integral=0;
+	PitchController_out.differential=0;
+	PitchController_out.exp_value=0;
+	PitchController_out.lastErr=0;
+	PitchController_out.U=0;
+
+	RollController_out.Kp=0.73;
+	RollController_out.Ki=0.02;
+	RollController_out.Kd=0;
+	RollController_out.integral=0;
+	RollController_out.differential=0;
+	RollController_out.exp_value=0;
+	RollController_out.lastErr=0;
+	RollController_out.U=0;
+	
+	PitchController_in.Kp=0;
+	PitchController_in.Ki=0;
+	PitchController_in.Kd=0;
+	PitchController_in.integral=0;
+	PitchController_in.differential=0;
+	PitchController_in.exp_value=0;
+	PitchController_in.lastErr=0;
+	PitchController_in.U=0;
+
+	RollController_in.Kp=1;
+	RollController_in.Ki=0;
+	RollController_in.Kd=0;
+	RollController_in.integral=0;
+	RollController_in.differential=0;
+	RollController_in.exp_value=0;
+	RollController_in.lastErr=0;
+	RollController_in.U=0;
+}
+
+void PID_Contral_(float exp_value, float test_value, PIDController_New *PIDController){
+	float err;
+	//计算误差
+	err = exp_value - test_value;
+	
+	//计算积分
+	PIDController->integral += err*dT;
+	
+	//计算微分
+	PIDController->differential = err - PIDController->lastErr;
+	
+	//计算结果
+	PIDController->U = PIDController->Kp*err + PIDController->Ki*PIDController->integral + PIDController->Kd*PIDController->differential;
+
+	//存储err
+	PIDController->lastErr = err;
+}
+
+#endif
+float limit(float data, float max, float min){
+
+	if(data > min && data < max){
+		return data;
+	}else if(data > max){
+		return max;
+	}else{
+		return min;
+	}
+}
+
+
 /********************************************************
   * @brief      : ManualTurnMap_value
   * @details    : 从遥控器接收到的数据映射为角度
@@ -181,13 +287,9 @@ float YawPID_Contral(float exp_wYaw, float now_Yaw, float now_wYaw, PIDControlle
   *
   ********************************************************/
 int16_t AccMap_value(uint16_t input) {
-    if (input >= 400 && input <= 920) {
-        // 950 ~ 485 到 0 ~ 2000
-			
-			if(-((input - 485) * 2000 / (920 - 485)) + 2000 > 0){
-				return -((input - 485) * 2000 / (950 - 485)) + 2000;
-			}else return 0;	
-        
+    if (input >= 590 && input <= 1280) {
+        // 615 ~ 1235 到 135 ~ 260
+				return ((input - 615) * (260-126) / (1235-615)) + 126;
     } else {
         return 0; 
     }
@@ -197,24 +299,24 @@ int16_t AccMap_value(uint16_t input) {
 
 //Yaw角的映射: pwm->angleW, yaw映射到的范围还需要考虑? yaw直接搞成角速度就行了
 float YawMap_value(uint16_t input) {
-    if (input >= 900 && input <= 1130) {
-        // 750 ~ 1140 到 -1500 ~ 0
-        return ((input - 750) * (1500) / (1140 - 750)) - 1500;
-    } else if (input > 1160 && input <= 1580) {
-        // 1160 ~ 1580 到 0 ~ 1500
-        return ((input - 1160) * 1500 / (1580 - 1160));
+    if (input >= 600 && input <= 915) {
+        // 600 ~ 915 到 -1500 ~ 0
+        return ((input - 600) * (1500) / (915 - 600)) - 1500;
+    } else if (input > 925 && input <= 1245) {
+        // 925 ~ 1245 到 0 ~ 1500
+        return ((input - 925) * 1500 / (1245 - 925));
     } else {
         return 0; 
     }
 }
 //Roll角的映射: pwm->angle
 float RollMap_value(uint16_t input) {
-    if (input >= 1180 && input <= 1600) {
-        // 1600 ~ 1180 到 -1500 ~ 0
-        return ((input - 1180) * (1500) / (1180 - 1600));
-    } else if (input >= 750 && input <= 1160) {
-        // 1160 ~ 750 到 0 ~ 1500
-        return ((input - 1160) * 1500 / (750 - 1160));
+    if (input >= 930 && input <= 1300) {
+        // 1245 ~ 930 到 -1500 ~ 0
+        return ((input - 930) * (1500) / (930 - 1245));
+    } else if (input >= 600 && input <= 925) {
+        // 925 ~ 615 到 0 ~ 1500
+        return ((input - 925) * 1500 / (615 - 925));
     } else {
         return 0; 
     }
@@ -222,12 +324,12 @@ float RollMap_value(uint16_t input) {
 
 //Pitch角的映射: pwm->angle
 float PitchMap_value(uint16_t input) {
-    if (input >= 850 && input <= 1140) {
-        // 750 ~ 1160 到 -1500 ~ 0
-        return ((input - 750) * (1500) / (1160 - 750)) - 1500;
-    } else if (input >= 1180 && input <= 1580) {
-        // 1180 ~ 1580 到 0 ~ 1500
-        return ((input - 1180) * 1500 / (1580 - 1180));
+    if (input >= 610 && input <= 918) {
+        // 610 ~ 918 到 -1500 ~ 0
+        return ((input - 610) * (1500) / (918 - 610)) - 1500;
+    } else if (input >= 928 && input <= 1250) {
+        // 928 ~ 1250 到 0 ~ 1500
+        return ((input - 928) * 1500 / (1250 - 928));
     } else {
         return 0; 
     }
@@ -264,14 +366,26 @@ float PID_Contral(){
 	ExpAngleByReceiver(pwm_IN);
 
 	acc = AccMap_value(pwm_IN[2]);
+	
+#if pid_version == 0
 	RollPID_Contral(roll_Exp, roll, gyroData.x, &RollController);
 	PitchPID_Contral(pitch_Exp, pitch, gyroData.y, &PitchController);
 	YawPID_Contral(w_yaw_Exp, yaw, gyroData.z, &YawController);
 		
-	RollController.U 	= limit(RollController.U 	+= RollController.deltU_in, 5000, -5000);
+	RollController.U 	= limit(RollController.U 	+= RollController.deltU_in, 500, -500);
 	PitchController.U = limit(PitchController.U += PitchController.deltU_in, 500, -500);
 	YawController.U   = limit(YawController.U 	+= YawController.deltU_in, 500, -500);
+#else
+	PID_Contral_(roll_Exp,roll,&RollController_out);
+	PID_Contral_(RollController_out.U,gyroData.x, &RollController_in);	
 	
+//	PID_Contral_();
+//	PID_Contral_();
+//	
+//	PID_Contral_();
+
+	
+#endif
 	
 	//问题：U没东西？？！ 控制器设置的锅；已解决，原因：忘记控制器初始化
 //		Serial_Printf("roll_U%f\r\n ", RollController.U);
@@ -280,17 +394,23 @@ float PID_Contral(){
 //		Serial_Printf("\r\n");
 //		delay_ms(100);
 
-	if(acc>300){
-		pwm_OUT[0] = acc +  RollController.U;
-		pwm_OUT[1] = acc +  RollController.U;
-		pwm_OUT[2] = acc -  RollController.U;
-		pwm_OUT[3] = acc -  RollController.U;
-	}else{
-		pwm_OUT[0] = acc; 
-		pwm_OUT[1] = acc; 
-		pwm_OUT[2] = acc; 
-		pwm_OUT[3] = acc; 
-		
+	if(pwm_IN[2]>600)
+		if(acc>160){
+			pwm_OUT[0] = acc +  RollController_in.U;
+			pwm_OUT[1] = acc -  RollController_in.U;
+			pwm_OUT[2] = acc +  RollController_in.U;
+			pwm_OUT[3] = acc -  RollController_in.U;
+		}else{
+			pwm_OUT[0] = acc; 
+			pwm_OUT[1] = acc; 
+			pwm_OUT[2] = acc; 
+			pwm_OUT[3] = acc; 
+		}
+	else {
+		pwm_OUT[0] =0;
+		pwm_OUT[1] =0;
+		pwm_OUT[2] =0;
+		pwm_OUT[3] =0;
 	}
 
 }

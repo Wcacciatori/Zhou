@@ -203,12 +203,13 @@ void TIM2_IRQHandler(void)
 			if (TIM2_CAPTURE_STA[i]) { //已捕获到低电平，说明此时捕获到下降沿
                 TIM2_CAPTURE_STA[i] = 0; //更改捕获状态
                 TIM2_CAPTURE_VAL[i][1] = TIM_GetCapture1(TIM2); //读取下降沿对应计数器值
-                pwm_IN[2] = TIM2_CAPTURE_VAL[i][1]*1000 / TIM2_CAPTURE_VAL[i][0] ; //计算占空比
-                pwm_IN[2] = (pwm_IN[2] + 1) *5/7;
+                
+                //pwm_IN[2] = (pwm_IN[2] + 1) *5/7;
 								TIM2->CCER &= ~(0x0001 << (1 + 4 * i)); //CCxP=00 通道上升沿捕获
 			} else { //捕获到上升沿
                 TIM2_CAPTURE_STA[i] = 1; //更改捕获状态
                 TIM2_CAPTURE_VAL[i][0] = TIM_GetCapture1(TIM2); //读取上升沿对应计数器值
+								pwm_IN[2] = TIM2_CAPTURE_VAL[i][1]*1000 / TIM2_CAPTURE_VAL[i][0] ; //计算占空比
 								TIM_SetCounter(TIM2, 0);
                 TIM2->CCER |= (0x0001 << (1 + 4 * i)); //CCxP=01 通道下降沿捕获
             }
@@ -221,12 +222,13 @@ void TIM2_IRQHandler(void)
 					if (TIM2_CAPTURE_STA[i]) { //已捕获到低电平，说明此时捕获到下降沿
                 TIM2_CAPTURE_STA[i] = 0; //更改捕获状态
                 TIM2_CAPTURE_VAL[i][1] = TIM_GetCapture2(TIM2); //读取下降沿对应计数器值
-                pwm_IN[0] = TIM2_CAPTURE_VAL[i][1]*1000 / TIM2_CAPTURE_VAL[i][0] ; //计算占空比
-                pwm_IN[0] = (pwm_IN[0]) *5/4 -5;
+                
+                //pwm_IN[0] = (pwm_IN[0]) *5/4 -5;
 								TIM2->CCER &= ~(0x0001 << (1 + 4 * 1)); //CCxP=00 通道上升沿捕获
 			} else { //捕获到上升沿
                 TIM2_CAPTURE_STA[i] = 1; //更改捕获状态
                 TIM2_CAPTURE_VAL[i][0] = TIM_GetCapture2(TIM2); //读取上升沿对应计数器值
+								pwm_IN[0] = TIM2_CAPTURE_VAL[i][1]*1000 / TIM2_CAPTURE_VAL[i][0] ; //计算占空比
 								TIM_SetCounter(TIM2, 0);
                 TIM2->CCER |= (0x0001 << (1 + 4 * 1)); //CCxP=01 通道下降沿捕获
             }
@@ -252,12 +254,13 @@ void TIM4_IRQHandler(void)
 			if (TIM4_CAPTURE_STA[i]) { //已捕获到低电平，说明此时捕获到下降沿
                 TIM4_CAPTURE_STA[i] = 0; //更改捕获状态
                 TIM4_CAPTURE_VAL[i][1] = TIM_GetCapture1(TIM4); //读取下降沿对应计数器值
-                pwm_IN[3] = TIM4_CAPTURE_VAL[i][1]*1000 / TIM4_CAPTURE_VAL[i][0] ; //计算占空比
-								pwm_IN[3] = (pwm_IN[3])*5/4 -5;
+                
+								//pwm_IN[3] = (pwm_IN[3])*5/4 -5;
                 TIM4->CCER &= ~(0x0001 << (1 + 4 * 0)); //CCxP=00 通道上升沿捕获
 			} else { //捕获到上升沿
                 TIM4_CAPTURE_STA[i] = 1; //更改捕获状态
                 TIM4_CAPTURE_VAL[i][0] = TIM_GetCapture1(TIM4); //读取上升沿对应计数器值
+								pwm_IN[3] = TIM4_CAPTURE_VAL[i][1]*1000 / TIM4_CAPTURE_VAL[i][0] ; //计算占空比
 								TIM_SetCounter(TIM4, 0);
                 TIM4->CCER |= (0x0001 << (1 + 4 * 0)); //CCxP=01 通道下降沿捕获
             }
@@ -270,12 +273,13 @@ void TIM4_IRQHandler(void)
 					if (TIM4_CAPTURE_STA[i]) { //已捕获到低电平，说明此时捕获到下降沿
                 TIM4_CAPTURE_STA[i] = 0; //更改捕获状态
                 TIM4_CAPTURE_VAL[i][1] = TIM_GetCapture3(TIM4); //读取下降沿对应计数器值
-                pwm_IN[1] = TIM4_CAPTURE_VAL[i][1]*1000 / TIM4_CAPTURE_VAL[i][0] ; //计算占空比
-                pwm_IN[1] = (pwm_IN[1])*5/4 -5;
+                
+                //pwm_IN[1] = (pwm_IN[1])*5/4 -5;
 								TIM4->CCER &= ~(0x0001 << (1 + 4 * 2)); //CCxP=00 通道上升沿捕获
 			} else { //捕获到上升沿
                 TIM4_CAPTURE_STA[i] = 1; //更改捕获状态
                 TIM4_CAPTURE_VAL[i][0] = TIM_GetCapture3(TIM4); //读取上升沿对应计数器值
+								pwm_IN[1] = TIM4_CAPTURE_VAL[i][1]*1000 / TIM4_CAPTURE_VAL[i][0] ; //计算占空比
 								TIM_SetCounter(TIM4, 0);
                 TIM4->CCER |= (0x0001 << (1 + 4 * 2)); //CCxP=01 通道下降沿捕获
             }

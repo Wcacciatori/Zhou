@@ -75,7 +75,6 @@ void Task_USART_test(){
 void Task_PoseCalcu(){
 	while(1)
 	{
-		
 		MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);//获取mpu6000原始数据
 		HMC_GetData(&MX, &MZ, &MY);
 			//稍加处理
@@ -92,9 +91,9 @@ void Task_PoseCalcu(){
 			GX = (int16_t)(GX/16.384);
 			GY = (int16_t)(GY/16.384);
 			GZ = (int16_t)(GZ/16.384);
-//			accData.x = AX/16384.0f;
-//			accData.y = AY/16384.0f;
-//		  accData.z = AZ/16384.0f;
+//		accData.x = AX/16384.0f;
+//		accData.y = AY/16384.0f;
+//		accData.z = AZ/16384.0f;
 		
 			accData.x = Axf/100;
 			accData.y = Ayf/100;
@@ -114,22 +113,6 @@ void Task_PoseCalcu(){
 			
 			MadgwickAHRSupdate(gyroData.x, gyroData.y, gyroData.z, accData.x, accData.y, accData.z, magData.x, magData.y, magData.z);
 			AttitudeSolver_GetEulerAngles(&roll, &pitch, &yaw);
-			PID_Contral();
-			
-			if(pwm_OUT[0]<2000&&pwm_OUT[1]<2000&&pwm_OUT[2]<2000&&pwm_OUT[3]<2000){
-				PWM_SetDuty3(pwm_OUT[0]/100);
-				PWM_SetDuty2(pwm_OUT[1]/100);
-				PWM_SetDuty1(pwm_OUT[2]/100);
-				PWM_SetDuty4(pwm_OUT[3]/100);				
-			}else{
-			  PWM_SetDuty3(0);
-			  PWM_SetDuty2(0);
-			  PWM_SetDuty1(0);
-			  PWM_SetDuty4(0);
-			}
-	
-			
-			 
 			
 			//madgwick(&q0, &q1, &q2, &q3);
 			//updateAngleTmp(&q0, &q1, &q2, &q3);
@@ -140,16 +123,27 @@ void Task_PoseCalcu(){
 
 }
 
-void Task_Motor()
+void Task_PID()
 {
 	while(1){
-	OS_ENTER_CRITICAL();
-	PWM_SetDuty3(pwm_IN[2]);
-	PWM_SetDuty2(pwm_IN[2]);
-  PWM_SetDuty1(pwm_IN[2]);
-  PWM_SetDuty4(pwm_IN[2]);
-		//Serial_Printf("www");
-	OS_EXIT_CRITICAL();
+	//OS_ENTER_CRITICAL();
+		PID_Contral();
+//				PWM_SetDuty3(pwm_OUT[0]);
+//				PWM_SetDuty2(pwm_OUT[1]);
+//				PWM_SetDuty1(pwm_OUT[2]);
+//				PWM_SetDuty4(pwm_OUT[3]);		
+			if(pwm_IN[2]>600){
+				PWM_SetDuty3(pwm_OUT[0]);
+				PWM_SetDuty2(pwm_OUT[1]);
+				PWM_SetDuty1(pwm_OUT[2]);
+				PWM_SetDuty4(pwm_OUT[3]);				
+			}else{
+			  PWM_SetDuty3(0);
+			  PWM_SetDuty2(0);
+			  PWM_SetDuty1(0);
+			  PWM_SetDuty4(0);
+			}
+	//OS_EXIT_CRITICAL();
 	OSTimeDly(5);
 	}
 }

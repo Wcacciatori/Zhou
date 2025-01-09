@@ -22,6 +22,19 @@ typedef struct PID{
 	float U;
 }PIDController;
 
+typedef struct PID_New{
+	float Kp;
+	float Ki;
+	float Kd;
+	
+	float differential;//Î¢·Ö
+	float integral;//»ý·Ö
+	float lastErr;	
+	float exp_value;
+	
+	float U;
+}PIDController_New;
+
 typedef struct ExpAngle{
 	float roll;
 	float pitch;
