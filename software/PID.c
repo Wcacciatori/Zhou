@@ -15,7 +15,8 @@
 */
 
 #define dT 0.01
-#define pid_version 1
+
+#define pid_version 1 //1是新版本，0是旧版本
 
 extern gyro gyroData;
 extern volatile float yaw,pitch,roll;
@@ -23,10 +24,12 @@ float w_yaw_Exp,pitch_Exp,roll_Exp;
 extern uint16_t pwm_IN[4];
 
 uint16_t pwm_OUT[4]={0};
-ExpAngle exp_angle;
-uint16_t Speed;//限幅后的油门
-//赋初值
 
+//ExpAngle exp_angle;
+//uint16_t Speed;//限幅后的油门
+
+
+//赋初值
 #if  pid_version == 0
 PIDController YawController;
 PIDController PitchController;
@@ -347,7 +350,7 @@ void ExpAngleByReceiver(uint16_t pwm_IN[4]){
 		俯仰-左上下
 		横滚-左左右	
 	*/
-	pitch_Exp = PitchMap_value(pwm_IN[1])/100;
+	pitch_Exp = PitchMap_value(pwm_IN[1])/100;//除一百是为了对应上面的*1000，以提高精度
 	roll_Exp 	= RollMap_value(pwm_IN[0])/100;
 	w_yaw_Exp = YawMap_value(pwm_IN[3])/100;
 
@@ -360,7 +363,7 @@ out：motor[4]四个电机输出
 
 float PID_Contral(){
 	
-	int acc;
+	int acc;//油门
 	
 	//期望值还没计算,需要通过receiver来计算,done
 	ExpAngleByReceiver(pwm_IN);
@@ -376,14 +379,17 @@ float PID_Contral(){
 	PitchController.U = limit(PitchController.U += PitchController.deltU_in, 500, -500);
 	YawController.U   = limit(YawController.U 	+= YawController.deltU_in, 500, -500);
 #else
+	//roll角内外环
 	PID_Contral_(roll_Exp,roll,&RollController_out);
 	PID_Contral_(RollController_out.U,gyroData.x, &RollController_in);	
 	
-//	PID_Contral_();
-//	PID_Contral_();
-//	
-//	PID_Contral_();
-
+	//pitch角内外环
+	PID_Contral_(pitch_Exp,pitch,&PitchController_out);
+	PID_Contral_(PitchController_out.U,gyroData.y, &PitchController_in);	
+	
+	//yaw角
+	PID_Contral_(w_yaw_Exp,gyroData.z,&YawController);
+	
 	
 #endif
 	
@@ -394,19 +400,19 @@ float PID_Contral(){
 //		Serial_Printf("\r\n");
 //		delay_ms(100);
 
-	if(pwm_IN[2]>600)
+	if(pwm_IN[2]>600)//大于600说明遥控器打开
 		if(acc>160){
 			pwm_OUT[0] = acc +  RollController_in.U;
 			pwm_OUT[1] = acc -  RollController_in.U;
 			pwm_OUT[2] = acc +  RollController_in.U;
 			pwm_OUT[3] = acc -  RollController_in.U;
-		}else{
+		}else{ //保证飞机正常起飞
 			pwm_OUT[0] = acc; 
 			pwm_OUT[1] = acc; 
 			pwm_OUT[2] = acc; 
 			pwm_OUT[3] = acc; 
 		}
-	else {
+	else {//小于600遥控器关闭 各个输出归零
 		pwm_OUT[0] =0;
 		pwm_OUT[1] =0;
 		pwm_OUT[2] =0;
@@ -414,3 +420,4 @@ float PID_Contral(){
 	}
 
 }
+//其他todo的： 积分限度？？  起飞保护（加锁）？？  遥控器关闭依然转动？？
